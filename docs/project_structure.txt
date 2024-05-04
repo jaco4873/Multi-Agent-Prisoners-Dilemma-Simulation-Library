@@ -1,0 +1,853 @@
+--- Folder Structure ---
+.gitignore
+[agent_configs]
+    ├── fixed_strategy_agent_configs.py
+    ├── human_agent_config.py
+    └── llm_agent_configs.py
+[data]
+    └── strat_log.csv
+[docs]
+    └── .project_structure_ignore
+[helper_functions]
+    └── fixed_strategies.py
+[models]
+    ├── [__pycache__]
+        └── agent_config.cpython-310.pyc
+    └── agent_config.py
+[prompts]
+    ├── [__pycache__]
+        ├── choice_prompt.cpython-310.pyc
+        ├── game_description.cpython-310.pyc
+        └── selfish_system_message.cpython-310.pyc
+    ├── choice_prompt.py
+    ├── game_description.py
+    └── [personalities]
+        ├── [__pycache__]
+            ├── altruistic_personality_message.cpython-310.pyc
+            ├── custom_personality_message.cpython-310.pyc
+            └── selfish_personality_message.cpython-310.pyc
+        ├── altruistic_personality_message.py
+        ├── custom_personality_message.py
+        └── selfish_personality_message.py
+[scripts]
+    ├── main.py
+    └── test_run.py
+to-do.md
+[utils]
+    ├── __init__.py
+    ├── [__pycache__]
+        ├── agent.cpython-310.pyc
+        ├── agent_configs.cpython-310.pyc
+        └── fixed_strategies.cpython-310.pyc
+    ├── agent.py
+    └── simulation.py
+
+--- File Contents ---
+
+--- File: .gitignore ---
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+#   For a library or package, you might want to ignore these files since the code is
+#   intended to run in multiple environments; otherwise, check them in:
+# .python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# poetry
+#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+#poetry.lock
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#pdm.lock
+#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
+#   in version control.
+#   https://pdm.fming.dev/#use-with-ide
+.pdm.toml
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+#.idea/
+
+
+--- File: agent_configs/fixed_strategy_agent_configs.py ---
+from models.agent_config import AgentConfig
+from helper_functions.fixed_strategies import (
+    tit_for_tat, 
+    suspicious_tit_for_tat, 
+    forgiving_tit_for_tat, 
+    defection_sensitive_tit_for_tat, 
+    tit_for_two_tats, 
+    grim_trigger, 
+    always_cooperate, 
+    adaptive_strategy, 
+    soft_majority, 
+    hard_majority, 
+    random_strategy, 
+    betrayal
+)
+
+# Configurations
+
+tit_for_tat_agent = AgentConfig(
+    name="Tit For Tat",
+    agent_type="fixed",
+    fixed_strategy=tit_for_tat
+)
+
+suspicious_tit_for_tat_agent = AgentConfig(
+    name="Suspicious Tit For Tat",
+    agent_type="fixed",
+    fixed_strategy=suspicious_tit_for_tat
+)
+
+forgiving_tit_for_tat_agent = AgentConfig(
+    name="Forgiving Tit For Tat",
+    agent_type="fixed",
+    fixed_strategy=forgiving_tit_for_tat
+)
+
+defection_sensitive_tit_for_tat_agent = AgentConfig(
+    name="Defection Sensitive Tit For Tat",
+    agent_type="fixed",
+    fixed_strategy=defection_sensitive_tit_for_tat
+)
+
+tit_for_two_tats_agent = AgentConfig(
+    name="Tit For Two Tats",
+    agent_type="fixed",
+    fixed_strategy=tit_for_two_tats
+)
+
+grim_trigger_agent = AgentConfig(
+    name="Grim Trigger",
+    agent_type="fixed",
+    fixed_strategy=grim_trigger
+)
+
+always_cooperate_agent = AgentConfig(
+    name="Always Cooperate",
+    agent_type="fixed",
+    fixed_strategy=always_cooperate
+)
+
+adaptive_strategy_agent = AgentConfig(
+    name="Adaptive Strategy",
+    agent_type="fixed",
+    fixed_strategy=adaptive_strategy
+)
+
+soft_majority_agent = AgentConfig(
+    name="Soft Majority",
+    agent_type="fixed",
+    fixed_strategy=soft_majority
+)
+
+hard_majority_agent = AgentConfig(
+    name="Hard Majority",
+    agent_type="fixed",
+    fixed_strategy=hard_majority
+)
+
+random_strategy_agent = AgentConfig(
+    name="Random Strategy",
+    agent_type="fixed",
+    fixed_strategy=random_strategy
+)
+
+betrayal_agent = AgentConfig(
+    name="Betrayal",
+    agent_type="fixed",
+    fixed_strategy=betrayal
+)
+
+
+--- File: agent_configs/human_agent_config.py ---
+from models.agent_config import AgentConfig
+
+human_agent = AgentConfig(
+    name="Participant",
+    agent_type="human"
+)
+
+--- File: agent_configs/llm_agent_configs.py ---
+from models.agent_config import AgentConfig
+
+altruistic_gpt_4_turbo_agent = AgentConfig(
+    name="Altruistic GPT-4-Turbo",
+    agent_type="llm",
+    llm_model="gpt-4-turbo",
+    llm_personality="altruistic"
+)
+
+selfish_gpt_4_turbo_agent = AgentConfig(
+    name="Selfish GPT-4-Turbo",
+    agent_type="llm",
+    llm_model="gpt-4-turbo",
+    llm_personality="selfish"
+)
+
+altruistic_gpt_35_turbo_agent = AgentConfig(
+    name="Altruistic GPT-3.5-Turbo",
+    agent_type="llm",
+    llm_model="gpt-3.5-turbo",
+    llm_personality="altruistic"
+)
+
+selfish_gpt_35_turbo_agent = AgentConfig(
+    name="Selfish GPT-3.5-Turbo",
+    agent_type="llm",
+    llm_model="gpt-3.5-turbo",
+    llm_personality="selfish"
+)
+
+--- File: data/strat_log.csv ---
+Agent Name,Choice,Score
+Tit For Two Tats,COOPERATE,0
+Human,DEFECT,5
+Tit For Two Tats,COOPERATE,0
+Human,DEFECT,10
+Tit For Two Tats,DEFECT,1
+Human,DEFECT,11
+Tit For Two Tats,DEFECT,6
+Human,COOPERATE,11
+Tit For Two Tats,COOPERATE,6
+Human,DEFECT,16
+
+
+--- File: docs/.project_structure_ignore ---
+
+
+--- File: helper_functions/fixed_strategies.py ---
+import random
+
+def tit_for_tat(opponent_history):
+    """Replicates the opponent's last action. Cooperates on the first move."""
+    return opponent_history[-1] if opponent_history else 'COOPERATE'
+
+def suspicious_tit_for_tat(opponent_history):
+    """Replicates the opponent's last action. Defects on the first move."""
+    return opponent_history[-1] if opponent_history else 'DEFECT'
+
+def forgiving_tit_for_tat(opponent_history, forgiveness_probability=0.05):
+    """Like Tit for Tat, but occasionally forgives by cooperating even after a defection, based on a specified probability."""
+    if not opponent_history or opponent_history[-1] == 'COOPERATE' or random.random() <= forgiveness_probability:
+        return 'COOPERATE'
+    return 'DEFECT'
+
+def defection_sensitive_tit_for_tat(opponent_history, shift_threshold=5):
+    """
+    Cooperates on the first move, then mirrors the opponent's last move, but switches to consistent defections
+    once a threshold of opponent defections is reached.
+    """
+    if not opponent_history:
+        return 'COOPERATE'
+    if opponent_history.count('DEFECT') > shift_threshold:
+        return 'DEFECT'
+    else:
+        return opponent_history[-1]
+
+def tit_for_two_tats(opponent_history):
+    """Defects only if the opponent has defected in the last two consecutive rounds."""
+    return 'DEFECT' if opponent_history[-2:] == ['DEFECT', 'DEFECT'] else 'COOPERATE'
+
+def grim_trigger(opponent_history):
+    """Cooperates until the opponent defects once, after which it always defects. (Also known is Friedman Strategy)"""
+    return 'DEFECT' if 'DEFECT' in opponent_history else 'COOPERATE'
+
+def always_cooperate():
+    """Always cooperates"""
+    return 'COOPERATE'
+
+def adaptive_strategy(opponent_history):
+    """
+    Adapts its action based on the relative frequency of cooperation versus defection by the opponent to allow 
+    mutual cooperation while being protected from exploitation.
+    """
+    if not opponent_history:
+        return 'COOPERATE'
+    cooperate_count = opponent_history.count('COOPERATE')
+    defect_count = opponent_history.count('DEFECT')
+    if cooperate_count + defect_count != len(opponent_history):
+        raise ValueError("Adaptive Strategy not working as expected.") # Not for prod
+    if cooperate_count > defect_count:
+        return 'COOPERATE' 
+    else:
+        return 'DEFECT'  
+    
+def soft_majority(opponent_history):
+    """Cooperates if the majority of actions by the opponent were cooperative, otherwise defects."""
+    return 'COOPERATE' if not opponent_history or opponent_history.count('COOPERATE') > len(opponent_history) / 2 else 'DEFECT'
+
+def hard_majority(opponent_history):
+    """Defects initially and then follows the majority action of the opponent."""
+    return 'DEFECT' if not opponent_history or opponent_history.count('COOPERATE') <= len(opponent_history) / 2 else 'COOPERATE'
+
+def random_strategy(_):
+    """Randomly chooses between cooperating and defecting."""
+    return random.choice(['COOPERATE', 'DEFECT'])
+
+def betrayal(opponent_history, betrayal_turn=5):
+    """Builds trust by cooperating and then strategically defects at a specific turn."""
+    return 'COOPERATE' if len(opponent_history) < betrayal_turn else 'DEFECT'
+
+
+--- File: models/agent_config.py ---
+from pydantic import BaseModel, validator
+from typing import Optional, Callable, List, Any
+
+class AgentConfig(BaseModel):
+    name: str
+    agent_type: str
+    fixed_strategy: Optional[Callable[[List[Any]], str]] = None
+    llm_model: Optional[str] = None
+    llm_personality: Optional[str] = None
+    score: int = 0
+
+    @validator('agent_type')
+    def check_agent_type(cls, value):
+        valid_types = ['fixed', 'llm', 'human']
+        if value not in valid_types:
+            raise ValueError(f"agent_type must be one of {valid_types}")
+        return value
+
+    @validator('llm_model')
+    def check_llm_model(cls, value,values):
+        if values['agent_type'] == 'llm':
+            valid_models = ['gpt-3.5-turbo', 'gpt-4-turbo']
+            if not value:
+                raise ValueError("llm_model is required for agent_type 'llm'")
+            if value not in valid_models:
+                raise ValueError(f"llm_model must be one of {valid_models}")
+        return value
+
+    @validator('llm_personality')
+    def check_llm_personality(cls, value, values):
+        if values['agent_type'] == 'llm':
+            valid_personalities = ['selfish', 'altruistic']
+            if not value:
+                raise ValueError("llm_personality is required for agent_type 'llm'")
+            if value not in valid_personalities:
+                raise ValueError(f"llm_personality must be one of {valid_personalities}")
+        return value
+
+
+--- File: prompts/choice_prompt.py ---
+choice_prompt = """
+Please choose 'COOPERATE' or 'DEFECT' for this round.
+Answer only with a single word reflecting your choice.
+"""
+
+--- File: prompts/game_description.py ---
+game_description = """
+Welcome to the Iterated Prisoner's Dilemma Game! In this game, you will make a series of decisions across multiple rounds, choosing whether to cooperate or defect in each interaction with another player. The outcome of your decisions will affect not only your own score but also that of your opponent, based on the following payoff matrix:
+
+Cooperate-Defect: If you cooperate and your opponent defects, you will score 0 points while your opponent scores 5 points.
+Defect-Defect: If both you and your opponent choose to defect, each of you will score 0 points.
+Cooperate-Cooperate: If both you and your opponent cooperate, each of you will score 3 points.
+Your decisions and their consequences will accumulate over the rounds.
+
+Rules of the Game:
+
+1. Rounds: The game will consist of an undefined number of rounds.
+2. Decision Making: In each round, you must choose to either "Cooperate" or "Defect." You will make your choice simultaneously with your opponent, without knowledge of their decision.
+3. Scoring: After each round, points will be awarded based on the choices made by you and your opponent according to the payoff matrix.
+4. Strategy: You are encouraged to develop a strategy based on the outcomes of previous rounds. Pay close attention to your opponent's past behavior, as it may give you insights into their future actions.
+"""
+
+--- File: prompts/personalities/altruistic_personality_message.py ---
+altruistic_personality_message = 'You are an altruist. Your decisions should be to maximize the total score of both players.'
+
+
+--- File: prompts/personalities/custom_personality_message.py ---
+custom_personality_message = "You are an... (Write your own custom personality message here.)"
+
+--- File: prompts/personalities/selfish_personality_message.py ---
+selfish_personality_message = 'You are selfish. Your decisions should aim to maximize your own score.'
+
+--- File: scripts/main.py ---
+import os
+import csv
+from helper_functions.fixed_strategies import tit_for_tat, tit_for_two_tats, grim_trigger, pavlov, adaptive_strategy, soft_majority, hard_majority, harrington
+from utils.simulation import simulate_prisoners_dilemma
+
+iterations = os.getenv('ITERATIONS')
+
+match_ups = [tit_for_tat,tit_for_two_tats,grim_trigger,pavlov,adaptive_strategy,soft_majority,hard_majority,harrington]
+
+
+# Check for the existence of summary files from previous simulations and delete them to start fresh
+if os.path.exists("strat_desc.txt"):
+    os.remove("strat_desc.txt")  # Remove the strategy description file if it exists
+
+with open('strat_log.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['Strategy', 'Agent_A_choice', 'Agent_A.score', 'Agent_B_choice', 'Agent_B.score'])
+
+if os.path.exists("llm_log.txt"):
+    os.remove("llm_log.txt")  # Remove the LLM log file if it exists
+
+# Write the header row outside of the loop to ensure it's only written once
+with open('strat_score.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['Strategy Name', 'Agent A Score', 'Agent B (LLM) Score'])
+
+# Iterate over each strategy to simulate the Prisoner's Dilemma game and analyze the results
+for strategy in strategies:
+
+    # Create header with strategy name in log file
+    with open("llm_log.txt", 'a') as log_file:
+        log_file.write(f"\n-----------------------------------------------------------------------\n{strategy.__name__}\n-----------------------------------------------------------------------\n")
+
+    scores_a, scores_b, agent_a, agent_b = simulate_prisoners_dilemma(strategy, iterations)
+
+    # Plotting setup: initialize figure and plot scores over iterations for both agents
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(1, iterations + 1), scores_a, label='Agent A', color='blue')
+    plt.plot(range(1, iterations + 1), scores_b, label='Agent B', color='red')
+    plt.xlabel('Iteration')  # Label for the x-axis
+    plt.ylabel('Score')  # Label for the y-axis
+    # Set the title of the plot to include the name of the current strategy being evaluated
+    title = f"Scores of Agent A and Agent B (LLM) over Iterations for {strategy.__name__}"
+    plt.title(title)
+    plt.legend()  # Display a legend for the plot
+    plt.grid(True)  # Enable grid lines for better readability
+
+    # Define the filename for saving the plot based on the strategy name
+    image_file_name = f"plot_{strategy.__name__}.png"
+    plt.savefig(image_file_name)  # Save the plot as an image file
+
+    plt.show()  # Display the plot
+
+    # Request a description of Agent B's strategy from the language model
+    strategy_description_b = describe_strategy(agent_b)
+    print(f"LLM strategy description:\n{strategy_description_b}\n")  # Print the generated strategy description
+
+    # Append the strategy name and its description to the strategy description file
+    with open("strat_desc.txt", 'a') as log_file:
+        log_file.write(f"----------------------------------------------------------------------\n")
+        log_file.write(f"\nStrategy Name: {strategy.__name__}\n\n")
+        log_file.write(f"LLM strategy description:\n{strategy_description_b}\n")
+
+    # Append the strategy scores to the CSV file
+    with open('strat_score.csv', 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([strategy.__name__, scores_a[-1], scores_b[-1]])
+
+--- File: scripts/test_run.py ---
+from utils.simulation import simulate_prisoners_dilemma
+
+from agent_configs.human_agent_config import human_agent
+from agent_configs.llm_agent_configs import (
+    selfish_gpt_4_turbo_agent, altruistic_gpt_4_turbo_agent, altruistic_gpt_35_turbo_agent, selfish_gpt_35_turbo_agent 
+)
+from agent_configs.fixed_strategy_agent_configs import (
+    tit_for_tat_agent, suspicious_tit_for_tat_agent, forgiving_tit_for_tat_agent,
+    defection_sensitive_tit_for_tat_agent, tit_for_two_tats_agent, grim_trigger_agent,
+    always_cooperate_agent, adaptive_strategy_agent, soft_majority_agent,
+    hard_majority_agent, random_strategy_agent, betrayal_agent
+)
+
+simulation_results = simulate_prisoners_dilemma(config_a = adaptive_strategy_agent, config_b = betrayal_agent, iterations=20)
+
+print(simulation_results)
+
+--- File: to-do.md ---
+1. Build interface
+   1. Users should be able to choose matchups and setups of strategies
+   2. Implement possibility for custom strategies that just needs to return either defect or cooperate
+
+--- File: utils/__init__.py ---
+
+
+--- File: utils/agent.py ---
+import random
+import re
+import logging
+from models.agent_config import AgentConfig
+from openai import OpenAI
+
+from prompts.personalities.custom_personality_message import custom_personality_message
+from prompts.personalities.selfish_personality_message import selfish_personality_message
+from prompts.personalities.altruistic_personality_message import altruistic_personality_message
+from prompts.game_description import game_description
+from prompts.choice_prompt import choice_prompt
+
+class Agent:
+    """
+    Represents an agent in the Prisoner's Dilemma game.
+
+    Attributes:
+        config (AgentConfig): The configuration object for the agent.
+
+    Methods:
+        __init__(self, config: AgentConfig): Initializes the Agent object.
+        decide_action(self): Makes a decision on the next action to take.
+        get_decision_fixed_agent(self): Gets the decision for a fixed agent.
+        get_decision_human_agent(self): Gets the decision for a human agent.
+        get_decision_llm_agent(self): Gets the decision for an LLM agent.
+        query_llm(self): Queries the LLM model for a decision.
+        extract_decision(self, response): Extracts the decision from the LLM response.
+        log_decision(self, response): Logs the LLM response to a file.
+    """
+
+    def __init__(self, config: AgentConfig, role: str):
+        """
+        Initializes a new instance of the Agent class.
+
+        Args:
+            config (AgentConfig): Configuration settings for the agent.
+            role (str): The role of the agent ('Agent A' or 'Agent B').
+        """
+        self.config = config
+        self.role = role
+
+    def decide_action(self, game_history):
+        """
+        Determines the action to be taken by the agent based on its type.
+
+        Returns:
+            str: The decision of the agent ('COOPERATE' or 'DEFECT').
+
+        Raises:
+            ValueError: If an unknown agent type is provided in the configuration.
+        """
+        if self.config.agent_type == 'fixed':
+            return self.get_decision_fixed_agent(game_history)
+        elif self.config.agent_type == 'human':
+            return self.get_decision_human_agent()
+        elif self.config.agent_type == 'llm':
+            return self.get_decision_llm_agent(game_history)
+
+    def get_decision_fixed_agent(self, game_history):
+        """
+        Executes the fixed strategy of the agent to decide an action.
+
+        Returns:
+            str: The decision of the agent based on a predefined strategy.
+
+        Raises:
+            ValueError: If no fixed strategy is set in the configuration.
+        """
+        if not self.config.fixed_strategy:
+            raise ValueError("Fixed strategy not set")
+        
+        opponent_role = 'Agent B' if self.role == 'Agent A' else 'Agent A'
+        opponent_history = [entry[opponent_role] for entry in game_history if opponent_role in entry]
+        
+        return self.config.fixed_strategy(opponent_history)
+    
+        
+    def get_decision_human_agent(self):
+        """
+        Collects a decision input from a human user through the console.
+
+        Returns:
+            str: The validated input from the user, either 'COOPERATE' or 'DEFECT'.
+
+        Notes:
+            Continuously prompts until a valid input is received.
+        """
+        valid_choices = ["COOPERATE", "DEFECT"]
+        while True:
+            user_input = input("Enter your decision (COOPERATE/DEFECT): ")
+            if user_input.strip().upper() in valid_choices:
+                return user_input.strip().upper() 
+            else:
+                print("Invalid input. Please enter 'COOPERATE' or 'DEFECT'.")
+
+    def get_decision_llm_agent(self, game_history):
+        """
+        Utilizes a language model to determine the agent's decision.
+
+        Returns:
+            str: The decision inferred from the language model response.
+
+        Notes:
+            Defaults to a random choice if no model is configured.
+        """
+        response = self.query_llm(game_history)
+        logging.info(f"LLM response: {response}")   
+        decision = self.extract_decision(response)
+        self.log_decision(response)
+        return decision
+
+    def query_llm(self, game_history):
+        """
+        Queries a language learning model to get a decision based on the game's history.
+
+        Returns:
+            str: The content received from the model's response.
+
+        Raises:
+            ValueError: If the personality is not set for an LLM agent type.
+            Exception: General exceptions are re-raised after logging.
+        """
+        if self.config.llm_model in ['gpt-3.5-turbo', 'gpt-4-turbo']:
+            client = OpenAI()
+        
+        personality_prompts = {
+            'selfish': selfish_personality_message,
+            'altruistic': altruistic_personality_message,
+            'custom': custom_personality_message
+        }
+        
+        messages = []
+        if len(game_history) == 0:
+            messages.append({"role": "system", "content": game_description + '\n\n'  + personality_prompts[self.config.llm_personality]})
+        
+        messages.append({"role": "user", "content": choice_prompt})
+        
+        try:
+            response = client.chat.completions.create(
+                model = self.config.llm_model,
+                messages=messages
+            )
+            return response.choices[0].message.content
+        
+        except Exception as e:
+            print(f"Error: {e}")
+            raise
+
+    def extract_decision(self, response):
+        """
+        Extracts the decision from the given response string using regular expressions,
+        specifically retrieving the last occurrence of 'COOPERATE' or 'DEFECT'.
+
+        Args:
+            response (str): The raw response string from an LLM query.
+
+        Returns:
+            str: The last 'COOPERATE' or 'DEFECT' found in the response; defaults to a random choice if no match is found.
+        """
+        matches = re.findall(r'COOPERATE|DEFECT', response)
+        return matches[-1] if matches else random.choice(["COOPERATE", "DEFECT"])
+
+    def log_decision(self, response):
+        """
+        Logs the decision response to a file.
+
+        Args:
+            response (str): The response to be logged.
+
+        Notes:
+            Appends the response to 'llm_log.txt' with a separator for clarity.
+        """
+        with open("llm_log.txt", 'a') as log_file:
+            log_file.write(f"{response}\n-----------------------------------------------------------------------\n")
+            
+    def update_score(self, own_action, opponents_action):
+        """
+        Updates the agent's score based on the outcome of the last round in a Prisoner's Dilemma game.
+
+        Args:
+
+            own_action (str): The action taken by the agent in the last round ('COOPERATE' or 'DEFECT'
+        
+            opponents_action (str): The action taken by the other agent in the last round ('COOPERATE' or 'DEFECT').
+
+        Raises:
+            ValueError: If the history is empty, which implies that there's no previous action to reference, or if the agent's name does not exist in the last entry of the history.
+        
+        Notes:
+            This method directly modifies the `score` attribute of the agent based on the outcome of the interactions as per the rules of the Prisoner's Dilemma. The score changes are logged to the console.
+        """
+
+        score_map = {
+            ('COOPERATE', 'COOPERATE'): 3,  # Mutual cooperation
+            ('COOPERATE', 'DEFECT'): 0,     # This agent cooperates, other defects
+            ('DEFECT', 'COOPERATE'): 5,     # This agent defects, other cooperates
+            ('DEFECT', 'DEFECT'): 1         # Mutual defection
+        }
+
+        action_pair = (own_action, opponents_action)
+        self.config.score += score_map[action_pair]
+
+        print(f"New score for {self.config.name}: {self.config.score}")
+
+
+--- File: utils/simulation.py ---
+import csv
+from utils.agent import Agent
+from models.agent_config import AgentConfig 
+
+
+def simulate_prisoners_dilemma(config_a: AgentConfig, config_b: AgentConfig, iterations: int):
+    # Dictionary to track the results of each type of outcome
+    results = {
+        "Cooperate-Cooperate": 0,
+        "Cooperate-Defect": 0,
+        "Defect-Cooperate": 0,
+        "Defect-Defect": 0
+    }
+    
+    game_history = []
+
+    agent_a = Agent(config_a, role="Agent A")
+    agent_b = Agent(config_b, role="Agent B")
+
+    # Prepare CSV for logging - Minimize I/O operations by keeping the file open
+    with open('strat_log.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Agent Name', 'Choice', 'Score'])
+
+        for i in range(iterations):
+            print(f"Running the {i}. iteration")
+            agent_a_choice = agent_a.decide_action(game_history)
+            agent_b_choice = agent_b.decide_action(game_history)
+            print(f"Iteration {i}: Agent A chooses {agent_a_choice}, Agent B chooses {agent_b_choice}")
+
+            round_result = {'Agent A': agent_a_choice, 'Agent B': agent_b_choice}
+            game_history.append(round_result)
+
+            # Update the results dictionary based on the choices
+            key = f"{agent_a_choice}-{agent_b_choice}"
+            if key in results:
+                results[key] += 1
+
+            agent_a.update_score(agent_a_choice, agent_b_choice)
+            agent_b.update_score(agent_b_choice, agent_a_choice)
+
+            # Log the choices and scores after each round
+            writer.writerow([agent_a.config.name, agent_a_choice, agent_a.config.score])
+            writer.writerow([agent_b.config.name, agent_b_choice, agent_b.config.score])
+
+    return results, game_history, agent_a, agent_b
+
