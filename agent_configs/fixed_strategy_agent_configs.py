@@ -1,5 +1,5 @@
 from models.agent_config import AgentConfig
-from helper_functions.fixed_strategies import (
+from utils.fixed_strategies import (
     tit_for_tat, 
     suspicious_tit_for_tat, 
     forgiving_tit_for_tat, 

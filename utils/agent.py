@@ -1,6 +1,5 @@
 import random
 import re
-import logging
 from models.agent_config import AgentConfig
 from openai import OpenAI
 
@@ -8,7 +7,6 @@ from prompts.personalities.custom_personality_message import custom_personality_
 from prompts.personalities.selfish_personality_message import selfish_personality_message
 from prompts.personalities.altruistic_personality_message import altruistic_personality_message
 from prompts.game_description import game_description
-from prompts.choice_prompt import choice_prompt
 
 class Agent:
     """
@@ -28,7 +26,7 @@ class Agent:
         log_decision(self, response): Logs the LLM response to a file.
     """
 
-    def __init__(self, config: AgentConfig, role: str):
+    def __init__(self, config: AgentConfig, role: str, choice_prompt: str):
         """
         Initializes a new instance of the Agent class.
 
@@ -38,8 +36,10 @@ class Agent:
         """
         self.config = config
         self.role = role
+        self.llm_messages = []
+        self.choice_prompt = choice_prompt
 
-    def decide_action(self, game_history):
+    def decide_action(self, game_history, opponent_score):
         """
         Determines the action to be taken by the agent based on its type.
 
@@ -54,7 +54,7 @@ class Agent:
         elif self.config.agent_type == 'human':
             return self.get_decision_human_agent()
         elif self.config.agent_type == 'llm':
-            return self.get_decision_llm_agent(game_history)
+            return self.get_decision_llm_agent(game_history, opponent_score)
 
     def get_decision_fixed_agent(self, game_history):
         """
@@ -70,8 +70,7 @@ class Agent:
             raise ValueError("Fixed strategy not set")
         
         opponent_role = 'Agent B' if self.role == 'Agent A' else 'Agent A'
-        opponent_history = [entry[opponent_role] for entry in game_history if opponent_role in entry]
-        
+        opponent_history = [round[opponent_role] for round in game_history if opponent_role in round]
         return self.config.fixed_strategy(opponent_history)
     
         
@@ -93,7 +92,7 @@ class Agent:
             else:
                 print("Invalid input. Please enter 'COOPERATE' or 'DEFECT'.")
 
-    def get_decision_llm_agent(self, game_history):
+    def get_decision_llm_agent(self, game_history, opponent_score):
         """
         Utilizes a language model to determine the agent's decision.
 
@@ -103,13 +102,12 @@ class Agent:
         Notes:
             Defaults to a random choice if no model is configured.
         """
-        response = self.query_llm(game_history)
-        logging.info(f"LLM response: {response}")   
+        response = self.query_llm(game_history, opponent_score)
         decision = self.extract_decision(response)
         self.log_decision(response)
         return decision
 
-    def query_llm(self, game_history):
+    def query_llm(self, game_history, opponent_score):
         """
         Queries a language learning model to get a decision based on the game's history.
 
@@ -129,17 +127,30 @@ class Agent:
             'custom': custom_personality_message
         }
         
-        messages = []
+
         if len(game_history) == 0:
-            messages.append({"role": "system", "content": game_description + '\n\n'  + personality_prompts[self.config.llm_personality]})
+            self.llm_messages.append({"role": "system", "content": game_description + '\n\n'  + personality_prompts[self.config.llm_personality]})
         
-        messages.append({"role": "user", "content": choice_prompt})
+        if len(game_history) > 0:
+            opponent_role = 'Agent B' if self.role == 'Agent A' else 'Agent A'
+            self.llm_messages.append({
+                "role": "user",
+                "content": (
+                    "Your opponent chose to " + str(game_history[-1][opponent_role]) +
+                    "'\n\n' The new score is: You: " + str(self.config.score) + " Opponent: " + str(opponent_score) + "."
+                )
+            })
+        
+        self.llm_messages.append({"role": "user", "content": self.choice_prompt})
         
         try:
             response = client.chat.completions.create(
                 model = self.config.llm_model,
-                messages=messages
+                messages=self.llm_messages
             )
+            
+            self.llm_messages.append({"role": "assistant", "content": response.choices[0].message.content})
+            
             return response.choices[0].message.content
         
         except Exception as e:
@@ -192,8 +203,8 @@ class Agent:
 
         score_map = {
             ('COOPERATE', 'COOPERATE'): 3,  # Mutual cooperation
-            ('COOPERATE', 'DEFECT'): 0,     # This agent cooperates, other defects
-            ('DEFECT', 'COOPERATE'): 5,     # This agent defects, other cooperates
+            ('COOPERATE', 'DEFECT'): 0,     # You cooperate, other defect
+            ('DEFECT', 'COOPERATE'): 5,     # You defect, other cooperate
             ('DEFECT', 'DEFECT'): 1         # Mutual defection
         }
 
