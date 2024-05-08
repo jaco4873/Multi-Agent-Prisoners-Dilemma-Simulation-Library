@@ -16,20 +16,10 @@ class AgentConfig(BaseModel):
             raise ValueError(f"agent_type must be one of {valid_types}")
         return value
 
-    @validator('llm_model')
-    def check_llm_model(cls, value,values):
-        if values['agent_type'] == 'llm':
-            valid_models = ['gpt-3.5-turbo', 'gpt-4-turbo']
-            if not value:
-                raise ValueError("llm_model is required for agent_type 'llm'")
-            if value not in valid_models:
-                raise ValueError(f"llm_model must be one of {valid_models}")
-        return value
-
     @validator('llm_personality')
     def check_llm_personality(cls, value, values):
         if values['agent_type'] == 'llm':
-            valid_personalities = ['selfish', 'altruistic']
+            valid_personalities = ['selfish', 'altruistic', 'default', 'custom']
             if not value:
                 raise ValueError("llm_personality is required for agent_type 'llm'")
             if value not in valid_personalities:

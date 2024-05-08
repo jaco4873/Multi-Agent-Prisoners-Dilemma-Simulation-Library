@@ -1,12 +1,22 @@
 import random
 import re
+import os
 from models.agent_config import AgentConfig
-from openai import OpenAI
+from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_cohere import ChatCohere
+from langchain_mistralai import ChatMistralAI
+from langchain_core.messages import HumanMessage, SystemMessage
+from dotenv import load_dotenv
+
 
 from prompts.personalities.custom_personality_message import custom_personality_message
 from prompts.personalities.selfish_personality_message import selfish_personality_message
 from prompts.personalities.altruistic_personality_message import altruistic_personality_message
 from prompts.game_description import game_description
+
+load_dotenv
 
 class Agent:
     """
@@ -104,7 +114,6 @@ class Agent:
         """
         response = self.query_llm(game_history, opponent_score)
         decision = self.extract_decision(response)
-        self.log_decision(response)
         return decision
 
     def query_llm(self, game_history, opponent_score):
@@ -118,44 +127,64 @@ class Agent:
             ValueError: If the personality is not set for an LLM agent type.
             Exception: General exceptions are re-raised after logging.
         """
-        if self.config.llm_model in ['gpt-3.5-turbo', 'gpt-4-turbo']:
-            client = OpenAI()
         
         personality_prompts = {
             'selfish': selfish_personality_message,
             'altruistic': altruistic_personality_message,
-            'custom': custom_personality_message
+            'custom': custom_personality_message,
+            'default': " "
         }
         
+        llm = self.get_llm_client()
 
         if len(game_history) == 0:
-            self.llm_messages.append({"role": "system", "content": game_description + '\n\n'  + personality_prompts[self.config.llm_personality]})
+            self.llm_messages.append(SystemMessage(content=game_description + '\n'  + personality_prompts[self.config.llm_personality]))
         
         if len(game_history) > 0:
             opponent_role = 'Agent B' if self.role == 'Agent A' else 'Agent A'
-            self.llm_messages.append({
-                "role": "user",
-                "content": (
+            self.llm_messages.append(HumanMessage(content=(
                     "Your opponent chose to " + str(game_history[-1][opponent_role]) +
-                    "'\n\n' The new score is: You: " + str(self.config.score) + " Opponent: " + str(opponent_score) + "."
-                )
-            })
+                    "\nThe new score is: You: " + str(self.config.score) + " Opponent: " + str(opponent_score) + "."
+                )))
         
-        self.llm_messages.append({"role": "user", "content": self.choice_prompt})
+        self.llm_messages.append(HumanMessage(content=self.choice_prompt))
         
         try:
-            response = client.chat.completions.create(
-                model = self.config.llm_model,
-                messages=self.llm_messages
-            )
+            api_response = llm.invoke(self.llm_messages)
             
-            self.llm_messages.append({"role": "assistant", "content": response.choices[0].message.content})
+            self.llm_messages.append(api_response)
             
-            return response.choices[0].message.content
-        
+            str_response =  str(api_response.content)
+            
+            return str_response
+
         except Exception as e:
             print(f"Error: {e}")
             raise
+
+    def get_llm_client(self):
+        
+        model = self.config.llm_model
+        
+        if model in ['gpt-3.5-turbo', 'gpt-4-turbo']:
+            llm = ChatOpenAI(model=model, temperature=os.environ['LLM_TEMPERATURE'], openai_api_key=os.environ['OPENAI_API_KEY'])
+        
+        elif model in ['claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307']:
+            llm = ChatAnthropic(model=model,temperature=os.environ['LLM_TEMPERATURE'], anthropic_api_key=os.environ['ANTHROPIC_API_KEY'])
+            
+        elif model in ['gemini-1.0-pro', 'gemini-1.5-pro-latest']:
+            llm = ChatGoogleGenerativeAI(model=model, temperature=os.environ['LLM_TEMPERATURE'], google_api_key=os.environ['GOOGLE_API_KEY'], convert_system_message_to_human=True)
+            
+        elif model in ['command', 'command-light', 'command-r', 'command-r-plus']:
+            llm = ChatCohere(model=model, temperature=os.environ['LLM_TEMPERATURE'], cohere_api_key=os.environ['COHERE_API_KEY'])
+        
+        elif model in ['open-mistral-7b', 'open-mixtral-8x7b', 'open-mixtral-8x22b', 'mistral-small-latest', 'mistral-medium-latest', 'mistral-large-latest']:
+            llm = ChatMistralAI(model=model, temperature=os.environ['LLM_TEMPERATURE'], mistral_api_key=os.environ['MISTRAL_API_KEY'])
+        
+        else: 
+            raise ValueError(f"Invalid model name: {model}. Check supported models in the docs.")
+        
+        return llm
 
     def extract_decision(self, response):
         """
@@ -170,19 +199,6 @@ class Agent:
         """
         matches = re.findall(r'COOPERATE|DEFECT', response)
         return matches[-1] if matches else random.choice(["COOPERATE", "DEFECT"])
-
-    def log_decision(self, response):
-        """
-        Logs the decision response to a file.
-
-        Args:
-            response (str): The response to be logged.
-
-        Notes:
-            Appends the response to 'llm_log.txt' with a separator for clarity.
-        """
-        with open("llm_log.txt", 'a') as log_file:
-            log_file.write(f"{response}\n-----------------------------------------------------------------------\n")
             
     def update_score(self, own_action, opponents_action):
         """
@@ -201,11 +217,30 @@ class Agent:
             This method directly modifies the `score` attribute of the agent based on the outcome of the interactions as per the rules of the Prisoner's Dilemma. The score changes are logged to the console.
         """
 
+        try:
+            coop_coop_score = int(os.environ['COOPERATE_COOPERATE_SCORE'])
+            coop_def_score = int(os.environ['COOPERATE_DEFECT_SCORE'])
+            def_coop_score = int(os.environ['DEFECT_COOPERATE_SCORE'])
+            def_def_score = int(os.environ['DEFECT_DEFECT_SCORE'])
+
+        except KeyError as e:
+            raise KeyError(f"Missing required environment variable: {e}")
+
+        except ValueError as e:
+            raise ValueError(f"Invalid value for environment variable: {e}")
+
         score_map = {
-            ('COOPERATE', 'COOPERATE'): 3,  # Mutual cooperation
-            ('COOPERATE', 'DEFECT'): 0,     # You cooperate, other defect
-            ('DEFECT', 'COOPERATE'): 5,     # You defect, other cooperate
-            ('DEFECT', 'DEFECT'): 1         # Mutual defection
+            ('COOPERATE', 'COOPERATE'): coop_coop_score,
+            ('COOPERATE', 'DEFECT'): coop_def_score,
+            ('DEFECT', 'COOPERATE'): def_coop_score,
+            ('DEFECT', 'DEFECT'): def_def_score
+        }
+
+        score_map = {
+            ('COOPERATE', 'COOPERATE'): coop_coop_score,
+            ('COOPERATE', 'DEFECT'): coop_def_score,
+            ('DEFECT', 'COOPERATE'): def_coop_score,
+            ('DEFECT', 'DEFECT'): def_def_score
         }
 
         action_pair = (own_action, opponents_action)

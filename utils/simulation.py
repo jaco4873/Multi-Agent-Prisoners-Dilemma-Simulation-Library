@@ -7,18 +7,24 @@ from utils.save_message_history import save_message_history
 from utils.agent import Agent
 from models.agent_config import AgentConfig 
 
-
-def setup_directories(base_path='../data'):
+def setup_directories(base_path='./data'):
     """Sets up necessary directories for storing simulation data."""
-    data_directory = os.path.join(base_path, 'datasets')
-    graphs_directory = os.path.join(base_path, 'graphs')
-    llm_message_history_directory = os.path.join(base_path, 'llm_message_history')
-    
-    os.makedirs(data_directory, exist_ok=True)
-    os.makedirs(graphs_directory, exist_ok=True)
-    os.makedirs(llm_message_history_directory, exist_ok=True)
+    try:
+        data_directory = os.path.join(base_path, 'datasets')
+        graphs_directory = os.path.join(base_path, 'graphs')
+        llm_message_history_directory = os.path.join(base_path, 'llm_message_history')
 
-    return data_directory, graphs_directory, llm_message_history_directory
+        # Attempt to create directories
+        os.makedirs(data_directory, exist_ok=True)
+        os.makedirs(graphs_directory, exist_ok=True)
+        os.makedirs(llm_message_history_directory, exist_ok=True)
+        
+        return data_directory, graphs_directory, llm_message_history_directory
+    
+    except Exception as e:
+        print(f"Failed to create directories: {e}")
+        raise
+
 
 def simulate_prisoners_dilemma(config_a: AgentConfig, config_b: AgentConfig, iterations: int, choice_prompt: str):
     
@@ -36,7 +42,6 @@ def simulate_prisoners_dilemma(config_a: AgentConfig, config_b: AgentConfig, ite
 
     game_history = []
     
-    # Set up directories for storing simulation data
     data_directory, graphs_directory, llm_message_history_directory = setup_directories()
 
     # Define path for saving the simulation logfile
