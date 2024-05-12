@@ -1,10 +1,10 @@
 import os
 
 try:
-    coop_def_score = os.environ['COOPERATE_DEFECT_SCORE']
-    def_coop_score = os.environ['DEFECT_COOPERATE_SCORE']
-    def_def_score = os.environ['DEFECT_DEFECT_SCORE']
-    coop_coop_score = os.environ['COOPERATE_COOPERATE_SCORE']
+    coop_def_score = os.environ["COOPERATE_DEFECT_SCORE"]
+    def_coop_score = os.environ["DEFECT_COOPERATE_SCORE"]
+    def_def_score = os.environ["DEFECT_DEFECT_SCORE"]
+    coop_coop_score = os.environ["COOPERATE_COOPERATE_SCORE"]
 
 except KeyError as e:
     raise KeyError(f"Missing required environment variable: {e}")
