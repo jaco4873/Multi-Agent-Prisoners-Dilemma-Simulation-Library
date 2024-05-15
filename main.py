@@ -94,7 +94,11 @@ load_dotenv()
 iterations = int(os.getenv("ITERATIONS"))
 
 # Define matchups in a list of tuples
-matchups = [(default_gpt_35_turbo_agent, defection_sensitive_tit_for_tat_agent)]
+matchups = [
+    (forgiving_tit_for_tat_agent, defection_sensitive_tit_for_tat_agent),
+    (grim_trigger_agent, random_strategy_agent),
+    (hard_majority_agent, betrayal_agent),
+]
 
 # Running the simulations
 for config_a, config_b in matchups:

@@ -100,13 +100,16 @@ class Agent:
         Notes:
             Continuously prompts until a valid input is received.
         """
-        valid_choices = ["COOPERATE", "DEFECT"]
+        valid_choices = ["C", "D"]
         while True:
-            user_input = input("Enter your decision (COOPERATE/DEFECT): ")
+            user_input = input("Enter your decision (C/D):")
             if user_input.strip().upper() in valid_choices:
-                return user_input.strip().upper()
+                if user_input.strip().upper() == "C":
+                    return "COOPERATE"
+                else:
+                    return "DEFECT"
             else:
-                print("Invalid input. Please enter 'COOPERATE' or 'DEFECT'.")
+                print("Invalid input. Please enter 'C' or 'D'.")
 
     def get_decision_llm_agent(self, game_history, opponent_score):
         """
@@ -282,13 +285,6 @@ class Agent:
 
         except ValueError as e:
             raise ValueError(f"Invalid value for environment variable: {e}")
-
-        score_map = {
-            ("COOPERATE", "COOPERATE"): coop_coop_score,
-            ("COOPERATE", "DEFECT"): coop_def_score,
-            ("DEFECT", "COOPERATE"): def_coop_score,
-            ("DEFECT", "DEFECT"): def_def_score,
-        }
 
         score_map = {
             ("COOPERATE", "COOPERATE"): coop_coop_score,
