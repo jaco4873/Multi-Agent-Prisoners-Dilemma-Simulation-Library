@@ -183,7 +183,7 @@ class ConsoleOutput:
 
     def write(self, message):
         self.text_widget.insert(tk.END, message)
-        self.text_widget.see(tk.END)  # Auto-scroll to the bottom
+        self.text_widget.see(tk.END)
 
     def flush(self):
         pass
@@ -194,24 +194,24 @@ class GUIInputHandler:
         self.root = root
         self.input_queue = []
         self.ready = False
-        self.status_label = status_label  # Status label for input instructions
+        self.status_label = status_label
 
     def read(self):
-        self.ready = False  # Reset readiness to receive new input
+        self.ready = False
         self.status_label.config(
             text="Please make your decision using the buttons above."
         )
         while not self.ready:
-            self.root.update()  # Keep the GUI responsive
-            self.root.after(100)  # Wait a bit before checking again
-        self.status_label.config(text="")  # Clear the text once input is received
+            self.root.update()
+            self.root.after(100)
+        self.status_label.config(text="")
         return self.input_queue.pop(0)
 
     def readline(self):
         return self.read()
 
     def write(self, s):
-        pass  # Optional: Redirect console outputs to GUI elements if needed
+        pass
 
     def flush(self):
         pass
@@ -222,7 +222,7 @@ class GUIInputHandler:
 
 
 def setup_gui_input(root):
-    status_label = ttk.Label(root, text="", font=("Helvetica", 15))
+    status_label = ttk.Label(root, text="", font=("Helvetica", 14))
     status_label.grid(row=4, column=0, columnspan=2, sticky="ew", padx=10, pady=5)
     input_handler = GUIInputHandler(root, status_label)
     sys.stdin = input_handler
@@ -230,11 +230,8 @@ def setup_gui_input(root):
 
 
 def add_decision_buttons(console_frame, input_handler):
-    # Create an overlay frame inside the console_frame
     overlay_frame = ttk.Frame(console_frame)
-    overlay_frame.place(
-        relx=1.0, rely=0.0, anchor="ne", x=-10, y=10
-    )  # Adjust the x and y values as needed
+    overlay_frame.place(relx=1.0, rely=0.0, anchor="ne", x=-10, y=10)
 
     ttk.Button(
         overlay_frame,
@@ -279,7 +276,7 @@ def add_matchup():
     config_a = ttk.Combobox(frame, values=agent_names, width=20)
     config_a.grid(row=0, column=0, padx=5, pady=5)
     placeholder_a = "Select Agent A"
-    config_a.set(placeholder_a)  # Set placeholder text
+    config_a.set(placeholder_a)
     config_a.bind(
         "<KeyRelease>", lambda event: filter_combobox(event, config_a, agent_names)
     )
@@ -379,17 +376,17 @@ def run_simulation():
 
 
 def update_env(var, value):
-    os.environ[var] = value  # Update the environment variable
-    set_key(".env", var, value)  # Also update the .env file
+    os.environ[var] = value
+    set_key(".env", var, value)
 
 
 def add_settings_group(
     settings_frame, group_name, env_vars, start_row, choice_prompt_var=None
 ):
     header = ttk.Label(settings_frame, text=group_name, font=("Helvetica", 14, "bold"))
-    header.grid(row=start_row, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
+    header.grid(row=start_row, column=0, columnspan=1, padx=5, pady=5, sticky="nsew")
 
-    current_row = start_row + 1  # Start the current_row from the next row
+    current_row = start_row + 1
     for var, label in env_vars.items():
         lbl = ttk.Label(settings_frame, text=label)
         lbl.grid(row=current_row, column=0, padx=5, pady=5, sticky="w")
@@ -435,11 +432,12 @@ def open_file(file_path):
 
 
 # Function to update file list
-def update_file_list(listbox, directory, extension):
-    listbox.delete(0, tk.END)
+def update_file_list(treeview, directory, extension):
+    for item in treeview.get_children():
+        treeview.delete(item)
     files = list_files(directory, extension)
     for file in files:
-        listbox.insert(tk.END, file)
+        treeview.insert("", "end", text=file)
 
 
 # ----------------------------------------------------------------------
@@ -457,7 +455,7 @@ root.grid_columnconfigure(1, weight=1)
 root.grid_columnconfigure(2, weight=1)
 
 # Configure row weights to ensure the proper distribution of space
-root.grid_rowconfigure(0, weight=50)
+root.grid_rowconfigure(0, weight=3)
 root.grid_rowconfigure(1, weight=1)
 
 # Define the bold font and create a style object
@@ -467,9 +465,7 @@ style.configure("Bold.TLabelframe.Label", font=bold_font)
 
 # Frame for settings
 settings_frame = ttk.LabelFrame(root, text="Settings", style="Bold.TLabelframe")
-settings_frame.grid(
-    row=0, column=0, padx=10, pady=10, sticky="nsew"
-)  # Ensure sticky="nsew"
+settings_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
 
 # Initialize choice prompt variable
@@ -497,7 +493,7 @@ custom_prompt_frame = ttk.LabelFrame(
 custom_prompt_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
 custom_prompt_text = tk.Text(custom_prompt_frame, wrap="word")
-custom_prompt_text.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+custom_prompt_text.grid(row=0, column=0, padx=5, pady=5, sticky="sew")
 
 
 # Load the default custom choice prompt
@@ -506,15 +502,14 @@ custom_prompt_text.insert(tk.END, default_custom_prompt)
 
 # Frame for console output
 console_frame = ttk.LabelFrame(root, text="Console Output", style="Bold.TLabelframe")
-console_frame.grid(row=1, column=1, columnspan=1, padx=10, pady=10, sticky="nsew")
+console_frame.grid(row=1, column=1, columnspan=1, padx=10, pady=10, sticky="sew")
 
 console_output = tk.Text(console_frame, wrap="word")
 console_output.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
-
 # Added overlay frame for decision buttons
 overlay_frame = ttk.Frame(console_frame)
-overlay_frame.place(relx=1.0, rely=1.0, anchor="se", x=-10, y=-10)
+overlay_frame.place(relx=1.0, rely=1.0, anchor="se", x=-0, y=-0)
 
 ttk.Button(
     overlay_frame,
@@ -560,41 +555,74 @@ matchups_frames = []
 # Initially add one matchup
 add_matchup()
 
-# FILE LIST
-# Frame for file list
+# FILE LIST# Frame for file list
 file_list_frame = ttk.LabelFrame(root, text="Files", style="Bold.TLabelframe")
 file_list_frame.grid(row=0, column=2, rowspan=2, padx=10, pady=10, sticky="nsew")
+file_list_frame.grid_columnconfigure(0, weight=1)
+file_list_frame.grid_rowconfigure(1, weight=1)
+file_list_frame.grid_rowconfigure(4, weight=1)
+file_list_frame.grid_rowconfigure(7, weight=1)
 
-
-# CSV Files Listbox
-csv_label = ttk.Label(file_list_frame, text="Simulation Files")
+# CSV Files Treeview
+csv_label = ttk.Label(
+    file_list_frame, text="Simulation Files", font=("Helvetica", 14, "bold")
+)
 csv_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-csv_listbox = tk.Listbox(file_list_frame)
-csv_listbox.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+csv_treeview = ttk.Treeview(file_list_frame)
+csv_treeview.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
 
-# Graphs Listbox
-graphs_label = ttk.Label(file_list_frame, text="Simulation Graphs")
+# Graphs Treeview
+graphs_label = ttk.Label(
+    file_list_frame, text="Simulation Graphs", font=("Helvetica", 14, "bold")
+)
 graphs_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
 
-graphs_listbox = tk.Listbox(file_list_frame)
-graphs_listbox.grid(row=4, column=0, padx=5, pady=5, sticky="nsew")
+graphs_treeview = ttk.Treeview(file_list_frame)
+graphs_treeview.grid(row=4, column=0, padx=5, pady=5, sticky="nsew")
+
+# LLM Message History Treeview
+llm_label = ttk.Label(
+    file_list_frame, text="LLM Message History", font=("Helvetica", 14, "bold")
+)
+llm_label.grid(row=6, column=0, padx=5, pady=5, sticky="w")
+
+llm_treeview = ttk.Treeview(file_list_frame)
+llm_treeview.grid(row=7, column=0, padx=5, pady=5, sticky="nsew")
 
 # Bind double-click event to open files
-csv_listbox.bind(
+csv_treeview.bind(
     "<Double-1>",
-    lambda event: open_file(os.path.join("data/datasets", csv_listbox.get(tk.ACTIVE))),
+    lambda event: open_file(
+        os.path.join(
+            "data/datasets", csv_treeview.item(csv_treeview.selection()[0])["text"]
+        )
+    ),
 )
-graphs_listbox.bind(
+graphs_treeview.bind(
     "<Double-1>",
-    lambda event: open_file(os.path.join("data/graphs", graphs_listbox.get(tk.ACTIVE))),
+    lambda event: open_file(
+        os.path.join(
+            "data/graphs", graphs_treeview.item(graphs_treeview.selection()[0])["text"]
+        )
+    ),
+)
+llm_treeview.bind(
+    "<Double-1>",
+    lambda event: open_file(
+        os.path.join(
+            "data/llm_message_history",
+            llm_treeview.item(llm_treeview.selection()[0])["text"],
+        )
+    ),
 )
 
 # Update the file lists
-update_file_list(csv_listbox, "data/datasets", ".csv")
+update_file_list(csv_treeview, "data/datasets", ".csv")
 update_file_list(
-    graphs_listbox, "data/graphs", ".png"
+    graphs_treeview, "data/graphs", ".png"
 )  # Assuming graphs are in PNG format
+update_file_list(llm_treeview, "data/llm_message_history", ".txt")
 
 # Start the Tkinter event loop
 root.mainloop()

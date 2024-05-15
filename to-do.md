@@ -3,7 +3,6 @@
 1. Build interface
 
    1. Implement possibility for custom strategies that just needs to return either defect or cooperate
-   2. Add matchups in GUI is very slow
 
 # General
 
