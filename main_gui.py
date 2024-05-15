@@ -154,6 +154,13 @@ agent_dict = {
 }
 
 # Grouping environment variables by category
+general = {"ITERATIONS": "Iterations per Matchup"}
+
+config = {
+    "CHOICE_PROMPT": "Choice Prompt",
+    "LLM_TEMPERATURE": "LLM Temperature",
+}
+
 api_keys = {
     "OPENAI_API_KEY": "OpenAI API Key",
     "ANTHROPIC_API_KEY": "Anthropic API Key",
@@ -167,12 +174,6 @@ payoff_matrix_settings = {
     "COOPERATE_DEFECT_SCORE": "Cooperate-Defect Score",
     "DEFECT_COOPERATE_SCORE": "Defect-Cooperate Score",
     "DEFECT_DEFECT_SCORE": "Defect-Defect Score",
-}
-
-config = {
-    "CHOICE_PROMPT": "Choice Prompt",
-    "ITERATIONS": "Iterations per Matchup",
-    "LLM_TEMPERATURE": "LLM Temperature",
 }
 
 
@@ -228,18 +229,24 @@ def setup_gui_input(root):
     return input_handler
 
 
-def add_decision_buttons(root, input_handler):
-    frame = ttk.Frame(root)
-    frame.grid(row=3, column=1, columnspan=2, sticky="ew", pady=5)
+def add_decision_buttons(console_frame, input_handler):
+    # Create an overlay frame inside the console_frame
+    overlay_frame = ttk.Frame(console_frame)
+    overlay_frame.place(
+        relx=1.0, rely=0.0, anchor="ne", x=-10, y=10
+    )  # Adjust the x and y values as needed
 
     ttk.Button(
-        frame,
+        overlay_frame,
         text="COOPERATE",
         command=lambda: input_handler.input_received("C"),
-    ).grid(row=0, column=0, padx=10, sticky="ew")
+    ).grid(row=0, column=0, padx=5)
+
     ttk.Button(
-        frame, text="DEFECT", command=lambda: input_handler.input_received("D")
-    ).grid(row=0, column=1, padx=10, sticky="ew")
+        overlay_frame,
+        text="DEFECT",
+        command=lambda: input_handler.input_received("D"),
+    ).grid(row=0, column=1, padx=5)
 
 
 def filter_combobox(event, combobox, values):
@@ -380,7 +387,7 @@ def add_settings_group(
     settings_frame, group_name, env_vars, start_row, choice_prompt_var=None
 ):
     header = ttk.Label(settings_frame, text=group_name, font=("Helvetica", 14, "bold"))
-    header.grid(row=start_row, column=0, columnspan=2, padx=5, pady=5, sticky="w")
+    header.grid(row=start_row, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
 
     current_row = start_row + 1  # Start the current_row from the next row
     for var, label in env_vars.items():
@@ -411,6 +418,30 @@ def add_settings_group(
     return current_row
 
 
+# Function to list files in a directory
+def list_files(directory, extension):
+    return [f for f in os.listdir(directory) if f.endswith(extension)]
+
+
+# Function to open selected file
+def open_file(file_path):
+    try:
+        if file_path.endswith(".csv"):
+            os.system(f"open {file_path}")  # Open CSV file with the default application
+        else:
+            os.system(f"open {file_path}")  # Open graph with the default application
+    except Exception as e:
+        messagebox.showerror("Error", f"Could not open file: {e}")
+
+
+# Function to update file list
+def update_file_list(listbox, directory, extension):
+    listbox.delete(0, tk.END)
+    files = list_files(directory, extension)
+    for file in files:
+        listbox.insert(tk.END, file)
+
+
 # ----------------------------------------------------------------------
 # Creating the GUI
 # ----------------------------------------------------------------------
@@ -421,13 +452,13 @@ root = tk.Tk()
 root.title("Prisoner's Dilemma Simulator")
 
 # Configure column weights for the main grid layout to set relative widths
-root.grid_columnconfigure(0, weight=1)  # 25%
-root.grid_columnconfigure(1, weight=2)  # 50%
-root.grid_columnconfigure(2, weight=1)  # 25%
+root.grid_columnconfigure(0, weight=1)
+root.grid_columnconfigure(1, weight=1)
+root.grid_columnconfigure(2, weight=1)
 
 # Configure row weights to ensure the proper distribution of space
-root.grid_rowconfigure(0, weight=3)  # 75%
-root.grid_rowconfigure(1, weight=1)  # 25%
+root.grid_rowconfigure(0, weight=50)
+root.grid_rowconfigure(1, weight=1)
 
 # Define the bold font and create a style object
 bold_font = tkfont.Font(family="Helvetica", size=18, weight="bold")
@@ -436,31 +467,38 @@ style.configure("Bold.TLabelframe.Label", font=bold_font)
 
 # Frame for settings
 settings_frame = ttk.LabelFrame(root, text="Settings", style="Bold.TLabelframe")
-settings_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+settings_frame.grid(
+    row=0, column=0, padx=10, pady=10, sticky="nsew"
+)  # Ensure sticky="nsew"
+
 
 # Initialize choice prompt variable
 choice_prompt_var = tk.StringVar()
 
 # Adding settings groups
 current_row = 0
-current_row = add_settings_group(settings_frame, "API Keys", api_keys, current_row)
+current_row = add_settings_group(settings_frame, "General", general, current_row)
+current_row += 1  # Empty row for spacing
+current_row = add_settings_group(
+    settings_frame, "LLM Config", config, current_row, choice_prompt_var
+)
 current_row += 1  # Empty row for spacing
 current_row = add_settings_group(
     settings_frame, "Payoff Matrix", payoff_matrix_settings, current_row
 )
 current_row += 1  # Empty row for spacing
-current_row = add_settings_group(
-    settings_frame, "LLM Config", config, current_row, choice_prompt_var
-)
+current_row = add_settings_group(settings_frame, "API Keys", api_keys, current_row)
 
 # Frame for custom choice prompt
 custom_prompt_frame = ttk.LabelFrame(
-    root, text="Enter your custom prompt:", style="Bold.TLabelframe"
+    root, text="Enter custom choice prompt", style="Bold.TLabelframe"
 )
+
 custom_prompt_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
-custom_prompt_text = tk.Text(custom_prompt_frame, height=10, wrap="word")
-custom_prompt_text.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+custom_prompt_text = tk.Text(custom_prompt_frame, wrap="word")
+custom_prompt_text.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+
 
 # Load the default custom choice prompt
 default_custom_prompt = choice_prompt_custom
@@ -470,8 +508,25 @@ custom_prompt_text.insert(tk.END, default_custom_prompt)
 console_frame = ttk.LabelFrame(root, text="Console Output", style="Bold.TLabelframe")
 console_frame.grid(row=1, column=1, columnspan=1, padx=10, pady=10, sticky="nsew")
 
-console_output = tk.Text(console_frame, height=10, wrap="word")
+console_output = tk.Text(console_frame, wrap="word")
 console_output.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+
+
+# Added overlay frame for decision buttons
+overlay_frame = ttk.Frame(console_frame)
+overlay_frame.place(relx=1.0, rely=1.0, anchor="se", x=-10, y=-10)
+
+ttk.Button(
+    overlay_frame,
+    text="COOPERATE",
+    command=lambda: input_handler.input_received("C"),
+).grid(row=0, column=0, padx=5)
+
+ttk.Button(
+    overlay_frame,
+    text="DEFECT",
+    command=lambda: input_handler.input_received("D"),
+).grid(row=0, column=1, padx=5)
 
 # Redirect stdout to console output
 sys.stdout = ConsoleOutput(console_output)
@@ -479,7 +534,7 @@ sys.stdout = ConsoleOutput(console_output)
 # Frame for matchups
 matchups_frame = ttk.LabelFrame(root, text="Matchups", style="Bold.TLabelframe")
 matchups_frame.grid(
-    row=0, column=1, columnspan=2, rowspan=1, padx=10, pady=(10, 0), sticky="nsew"
+    row=0, column=1, columnspan=1, rowspan=1, padx=10, pady=10, sticky="nsew"
 )
 
 # Frame for buttons
@@ -498,17 +553,48 @@ run_simulation_btn.grid(row=0, column=1, padx=5)
 
 # Input handler for the GUI
 input_handler = setup_gui_input(root)
-add_decision_buttons(root, input_handler)
-
-# Empty frame to ensure the third column is maintained
-empty_frame = ttk.Frame(root)
-empty_frame.grid(row=0, column=2, rowspan=2, padx=10, pady=10, sticky="nsew")
 
 # List to keep track of matchup frames
 matchups_frames = []
 
 # Initially add one matchup
 add_matchup()
+
+# FILE LIST
+# Frame for file list
+file_list_frame = ttk.LabelFrame(root, text="Files", style="Bold.TLabelframe")
+file_list_frame.grid(row=0, column=2, rowspan=2, padx=10, pady=10, sticky="nsew")
+
+
+# CSV Files Listbox
+csv_label = ttk.Label(file_list_frame, text="Simulation Files")
+csv_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+csv_listbox = tk.Listbox(file_list_frame)
+csv_listbox.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+
+# Graphs Listbox
+graphs_label = ttk.Label(file_list_frame, text="Simulation Graphs")
+graphs_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+
+graphs_listbox = tk.Listbox(file_list_frame)
+graphs_listbox.grid(row=4, column=0, padx=5, pady=5, sticky="nsew")
+
+# Bind double-click event to open files
+csv_listbox.bind(
+    "<Double-1>",
+    lambda event: open_file(os.path.join("data/datasets", csv_listbox.get(tk.ACTIVE))),
+)
+graphs_listbox.bind(
+    "<Double-1>",
+    lambda event: open_file(os.path.join("data/graphs", graphs_listbox.get(tk.ACTIVE))),
+)
+
+# Update the file lists
+update_file_list(csv_listbox, "data/datasets", ".csv")
+update_file_list(
+    graphs_listbox, "data/graphs", ".png"
+)  # Assuming graphs are in PNG format
 
 # Start the Tkinter event loop
 root.mainloop()
