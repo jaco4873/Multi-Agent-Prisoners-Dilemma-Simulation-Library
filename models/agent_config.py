@@ -8,7 +8,6 @@ class AgentConfig(BaseModel):
     fixed_strategy: Optional[Callable[[List[Any]], str]] = None
     llm_model: Optional[str] = None
     llm_personality: Optional[str] = None
-    score: int = 0
 
     @validator("agent_type")
     def check_agent_type(cls, value):

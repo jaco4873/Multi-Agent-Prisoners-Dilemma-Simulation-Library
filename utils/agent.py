@@ -53,6 +53,7 @@ class Agent:
         self.role = role
         self.llm_messages = []
         self.choice_prompt = choice_prompt
+        self.score = 0
 
     def decide_action(self, game_history, opponent_score):
         """
@@ -163,7 +164,7 @@ class Agent:
                         "Your opponent chose to "
                         + str(game_history[-1][opponent_role])
                         + "\nThe new score is: You: "
-                        + str(self.config.score)
+                        + str(self.score)
                         + " Opponent: "
                         + str(opponent_score)
                         + "."
@@ -189,7 +190,7 @@ class Agent:
     def get_llm_client(self):
         model = self.config.llm_model
 
-        if model in ["gpt-3.5-turbo", "gpt-4-turbo"]:
+        if model in ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gpt-4o"]:
             llm = ChatOpenAI(
                 model=model,
                 temperature=os.environ["LLM_TEMPERATURE"],
@@ -294,6 +295,6 @@ class Agent:
         }
 
         action_pair = (own_action, opponents_action)
-        self.config.score += score_map[action_pair]
+        self.score += score_map[action_pair]
 
-        print(f"New score for {self.config.name}: {self.config.score}")
+        print(f"New score for {self.config.name}: {self.score}")

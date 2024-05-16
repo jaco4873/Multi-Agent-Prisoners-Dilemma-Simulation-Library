@@ -2,7 +2,7 @@ import csv
 import os
 import datetime
 from utils.sanitize_file_name import sanitize_filename
-from utils.plot_strategy_score import plot_strategy_score
+from utils.plot_strategy_score import plot_scores
 from utils.save_message_history import save_message_history
 from utils.agent import Agent
 from models.agent_config import AgentConfig
@@ -34,14 +34,6 @@ def simulate_prisoners_dilemma(
     agent_a = Agent(config_a, role="Agent A", choice_prompt=choice_prompt)
     agent_b = Agent(config_b, role="Agent B", choice_prompt=choice_prompt)
 
-    # Dictionary to track the results of each type of outcome
-    results = {
-        "COOPERATE-COOPERATE": 0,
-        "COOPERATE-DEFECT": 0,
-        "DEFECT-COOPERATE": 0,
-        "DEFECT-DEFECT": 0,
-    }
-
     game_history = []
 
     data_directory, graphs_directory, llm_message_history_directory = (
@@ -53,7 +45,7 @@ def simulate_prisoners_dilemma(
     formatted_time = current_time.strftime("%Y-%m-%d %H:%M")
     filename = (
         sanitize_filename(
-            f"sim_{agent_a.config.name}_vs_{agent_b.config.name}_{formatted_time}"
+            f"matchup_{agent_a.config.name}_vs_{agent_b.config.name}_{formatted_time}"
         )
         + ".csv"
     )
@@ -65,32 +57,24 @@ def simulate_prisoners_dilemma(
 
         for i in range(iterations):
             agent_a_choice = agent_a.decide_action(
-                game_history, opponent_score=agent_b.config.score
+                game_history, opponent_score=agent_b.score
             )
             agent_b_choice = agent_b.decide_action(
-                game_history, opponent_score=agent_a.config.score
+                game_history, opponent_score=agent_a.score
             )
             print(
-                f"Iteration {i+1}: Agent A chooses {agent_a_choice}, Agent B chooses {agent_b_choice}"
+                f"Iteration {i+1}: {agent_a.config.name} chooses {agent_a_choice}, {agent_b.config.name} chooses {agent_b_choice}"
             )
 
             round_result = {"Agent A": agent_a_choice, "Agent B": agent_b_choice}
             game_history.append(round_result)
 
-            key = f"{agent_a_choice}-{agent_b_choice}"
-            if key in results:
-                results[key] += 1
-
             agent_a.update_score(agent_a_choice, agent_b_choice)
             agent_b.update_score(agent_b_choice, agent_a_choice)
 
             # Log the choices and scores after each round
-            writer.writerow(
-                [agent_a.config.name, i + 1, agent_a_choice, agent_a.config.score]
-            )
-            writer.writerow(
-                [agent_b.config.name, i + 1, agent_b_choice, agent_b.config.score]
-            )
+            writer.writerow([agent_a.config.name, i + 1, agent_a_choice, agent_a.score])
+            writer.writerow([agent_b.config.name, i + 1, agent_b_choice, agent_b.score])
 
     if agent_a.config.agent_type == "llm":
         save_message_history(
@@ -102,6 +86,6 @@ def simulate_prisoners_dilemma(
             agent_b, agent_a.config.name, llm_message_history_directory
         )
 
-    plot_strategy_score(full_path, graphs_directory)
+    plot_scores(full_path, graphs_directory)
 
-    return results, agent_a.config.score, agent_b.config.score
+    return agent_a.config.name, agent_a.score, agent_b.config.name, agent_b.score

@@ -4,6 +4,28 @@ from models.agent_config import AgentConfig
 # OpenAI
 # ----------------------------------------------------------------------
 
+# GPT-4 Omni
+altruistic_gpt_4_omni_agent = AgentConfig(
+    name="Altruistic GPT-4-Omni",
+    agent_type="llm",
+    llm_model="gpt-4o",
+    llm_personality="altruistic",
+)
+
+selfish_gpt_4_omni_agent = AgentConfig(
+    name="Selfish GPT-4-omni",
+    agent_type="llm",
+    llm_model="gpt-4o",
+    llm_personality="selfish",
+)
+
+default_gpt_4_omni_agent = AgentConfig(
+    name="Default GPT-4-omni",
+    agent_type="llm",
+    llm_model="gpt-4o",
+    llm_personality="default",
+)
+
 # GPT-4 Turbo
 altruistic_gpt_4_turbo_agent = AgentConfig(
     name="Altruistic GPT-4-Turbo",
@@ -23,6 +45,28 @@ default_gpt_4_turbo_agent = AgentConfig(
     name="Default GPT-4-Turbo",
     agent_type="llm",
     llm_model="gpt-4-turbo",
+    llm_personality="default",
+)
+
+# GPT-4 (Original)
+altruistic_gpt_4_agent = AgentConfig(
+    name="Altruistic GPT-4",
+    agent_type="llm",
+    llm_model="gpt-4",
+    llm_personality="altruistic",
+)
+
+selfish_gpt_4_agent = AgentConfig(
+    name="Selfish GPT-4",
+    agent_type="llm",
+    llm_model="gpt-4",
+    llm_personality="selfish",
+)
+
+default_gpt_4_agent = AgentConfig(
+    name="Default GPT-4",
+    agent_type="llm",
+    llm_model="gpt-4",
     llm_personality="default",
 )
 

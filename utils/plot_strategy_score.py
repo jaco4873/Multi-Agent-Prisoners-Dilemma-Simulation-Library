@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 
 
-def plot_strategy_score(file_path, graphs_dir):
+def plot_scores(file_path, graphs_dir):
     os.makedirs(graphs_dir, exist_ok=True)
 
     data = pd.read_csv(file_path)
