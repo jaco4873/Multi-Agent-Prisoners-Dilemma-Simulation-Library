@@ -167,31 +167,6 @@ agent_dict = {
     "Betrayal": betrayal_agent,
 }
 
-
-# Grouping environment variables by category
-general = {"ITERATIONS": "Iterations per Matchup"}
-
-config = {
-    "CHOICE_PROMPT": "Choice Prompt",
-    "LLM_TEMPERATURE": "LLM Temperature",
-}
-
-api_keys = {
-    "OPENAI_API_KEY": "OpenAI API Key",
-    "ANTHROPIC_API_KEY": "Anthropic API Key",
-    "GOOGLE_API_KEY": "Google API Key",
-    "COHERE_API_KEY": "Cohere API Key",
-    "MISTRAL_API_KEY": "Mistral API Key",
-}
-
-payoff_matrix_settings = {
-    "COOPERATE_COOPERATE_SCORE": "Cooperate-Cooperate Score",
-    "COOPERATE_DEFECT_SCORE": "Cooperate-Defect Score",
-    "DEFECT_COOPERATE_SCORE": "Defect-Cooperate Score",
-    "DEFECT_DEFECT_SCORE": "Defect-Defect Score",
-}
-
-
 class ConsoleOutput:
     def __init__(self, text_widget):
         self.text_widget = text_widget
@@ -515,6 +490,10 @@ style.map(
     foreground=[("selected", "SystemWindowText")],
 )
 
+# ----------------
+# COLUMN 1 
+# ----------------
+
 # Frame for settings
 settings_outer_frame = ttk.Frame(root)
 settings_outer_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
@@ -526,8 +505,29 @@ settings_frame.pack(fill="both", expand=True)
 
 scrollable_settings_frame = add_scrollable_frame(settings_frame)
 
-# Initialize choice prompt variable
-choice_prompt_var = tk.StringVar()
+# Grouping environment variables by category
+general = {"ITERATIONS": "Iterations per Matchup"}
+
+config = {
+    "CHOICE_PROMPT": "Choice Prompt",
+    "LLM_TEMPERATURE": "LLM Temperature",
+}
+
+api_keys = {
+    "OPENAI_API_KEY": "OpenAI API Key",
+    "ANTHROPIC_API_KEY": "Anthropic API Key",
+    "GOOGLE_API_KEY": "Google API Key",
+    "COHERE_API_KEY": "Cohere API Key",
+    "MISTRAL_API_KEY": "Mistral API Key",
+}
+
+payoff_matrix_settings = {
+    "COOPERATE_COOPERATE_SCORE": "Cooperate-Cooperate Score",
+    "COOPERATE_DEFECT_SCORE": "Cooperate-Defect Score",
+    "DEFECT_COOPERATE_SCORE": "Defect-Cooperate Score",
+    "DEFECT_DEFECT_SCORE": "Defect-Defect Score",
+}
+
 
 # Adding settings groups
 current_row = add_settings_group(scrollable_settings_frame, "General", general, 0)
@@ -545,6 +545,8 @@ current_row = add_settings_group(
 )
 
 # Frame for custom choice prompt
+choice_prompt_var = tk.StringVar()
+
 custom_prompt_frame = ttk.LabelFrame(
     root, text="Enter custom choice prompt", style="Bold.TLabelframe"
 )
@@ -557,6 +559,38 @@ custom_prompt_text.grid(row=0, column=0, padx=5, pady=5, sticky="sew")
 # Load the default custom choice prompt
 default_custom_prompt = choice_prompt_custom
 custom_prompt_text.insert(tk.END, default_custom_prompt)
+
+# ----------------
+# COLUMN 2 
+# ----------------
+
+# Frame for matchups
+matchups_outer_frame = ttk.Frame(root)
+matchups_outer_frame.grid(
+    row=0, column=1, columnspan=1, rowspan=1, padx=10, pady=10, sticky="nsew"
+)
+
+matchups_frame = ttk.LabelFrame(
+    matchups_outer_frame, text="Matchups", style="Bold.TLabelframe"
+)
+matchups_frame.pack(fill="both", expand=True)
+
+scrollable_matchups_frame = add_scrollable_frame(matchups_frame)
+
+
+# Frame for buttons
+button_frame = ttk.Frame(scrollable_matchups_frame)
+button_frame.grid(row=99, column=0, columnspan=3, pady=10)
+
+# Button to add matchups
+add_matchup_btn = ttk.Button(button_frame, text="Add Matchup", command=add_matchup)
+add_matchup_btn.grid(row=0, column=0, padx=5)
+
+# Button to run simulation
+run_simulation_btn = ttk.Button(
+    button_frame, text="Run Simulation", command=run_simulation
+)
+run_simulation_btn.grid(row=0, column=1, padx=5)
 
 # Frame for console output
 console_frame = ttk.LabelFrame(root, text="Console Output", style="Bold.TLabelframe")
@@ -581,46 +615,25 @@ ttk.Button(
     command=lambda: input_handler.input_received("D"),
 ).grid(row=0, column=1, padx=5)
 
-# Redirect stdout to console output
-sys.stdout = ConsoleOutput(console_output)
-
-# Frame for matchups
-matchups_outer_frame = ttk.Frame(root)
-matchups_outer_frame.grid(
-    row=0, column=1, columnspan=1, rowspan=1, padx=10, pady=10, sticky="nsew"
-)
-
-matchups_frame = ttk.LabelFrame(
-    matchups_outer_frame, text="Matchups", style="Bold.TLabelframe"
-)
-matchups_frame.pack(fill="both", expand=True)
-
-scrollable_matchups_frame = add_scrollable_frame(matchups_frame)
-
-# Frame for buttons
-button_frame = ttk.Frame(scrollable_matchups_frame)
-button_frame.grid(row=99, column=0, columnspan=3, pady=10)
-
-# Button to add matchups
-add_matchup_btn = ttk.Button(button_frame, text="Add Matchup", command=add_matchup)
-add_matchup_btn.grid(row=0, column=0, padx=5)
-
-# Button to run simulation
-run_simulation_btn = ttk.Button(
-    button_frame, text="Run Simulation", command=run_simulation
-)
-run_simulation_btn.grid(row=0, column=1, padx=5)
-
-# Input handler for the GUI
-input_handler = setup_gui_input(root)
-
 # List to keep track of matchup frames
 matchups_frames = []
 
 # Initially add one matchup
 add_matchup()
 
-# FILE LIST# Frame for file list
+
+# Input handler for the GUI
+input_handler = setup_gui_input(root)
+
+# Redirect stdout to console output
+sys.stdout = ConsoleOutput(console_output)
+
+
+# ----------------
+# COLUMN 3 
+# ----------------
+
+# Frame for file list
 file_list_frame = ttk.LabelFrame(root, text="Files", style="Bold.TLabelframe")
 file_list_frame.grid(row=0, column=2, rowspan=2, padx=10, pady=10, sticky="nsew")
 file_list_frame.grid_columnconfigure(0, weight=1)
@@ -686,7 +699,7 @@ llm_treeview.bind(
 update_file_list(csv_treeview, "data/datasets", ".csv")
 update_file_list(
     graphs_treeview, "data/graphs", ".png"
-)  # Assuming graphs are in PNG format
+) 
 update_file_list(llm_treeview, "data/llm_message_history", ".txt")
 
 # Start the Tkinter event loop
