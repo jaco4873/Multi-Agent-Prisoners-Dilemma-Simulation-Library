@@ -1,6 +1,7 @@
 import os
 import sys
 import tkinter as tk
+import threading
 from tkinter import ttk, messagebox
 import tkinter.font as tkfont
 from dotenv import load_dotenv, set_key
@@ -9,9 +10,15 @@ from utils.simulation import simulate_prisoners_dilemma
 # Import agents
 from agent_configs.human_agent_config import human_agent
 from agent_configs.llm_agent_configs import (
+    altruistic_gpt_4_omni_agent,
+    selfish_gpt_4_omni_agent,
+    default_gpt_4_omni_agent,
     altruistic_gpt_4_turbo_agent,
     selfish_gpt_4_turbo_agent,
     default_gpt_4_turbo_agent,
+    altruistic_gpt_4_agent,
+    selfish_gpt_4_agent,
+    default_gpt_4_agent,
     altruistic_gpt_35_turbo_agent,
     selfish_gpt_35_turbo_agent,
     default_gpt_35_turbo_agent,
@@ -58,6 +65,7 @@ from agent_configs.llm_agent_configs import (
     selfish_gemini_1_pro_agent,
     default_gemini_1_pro_agent,
 )
+
 from agent_configs.fixed_strategy_agent_configs import (
     tit_for_tat_agent,
     suspicious_tit_for_tat_agent,
@@ -91,12 +99,18 @@ choice_prompts = {
 # Dictionary mapping agent names to agent configs
 agent_dict = {
     "Human Participant": human_agent,
-    "GPT-4 Altruistic": altruistic_gpt_4_turbo_agent,
-    "GPT-4 Selfish": selfish_gpt_4_turbo_agent,
-    "GPT-4 Default": default_gpt_4_turbo_agent,
-    "GPT-3.5 Altruistic": altruistic_gpt_35_turbo_agent,
-    "GPT-3.5 Selfish": selfish_gpt_35_turbo_agent,
-    "GPT-3.5 Default": default_gpt_35_turbo_agent,
+    "GPT-4 Omni Altruistic": altruistic_gpt_4_omni_agent,
+    "GPT-4 Omni Selfish": selfish_gpt_4_omni_agent,
+    "GPT-4 Omni Default": default_gpt_4_omni_agent,
+    "GPT-4 Turbo Altruistic": altruistic_gpt_4_turbo_agent,
+    "GPT-4 Turbo Selfish": selfish_gpt_4_turbo_agent,
+    "GPT-4 Turbo Default": default_gpt_4_turbo_agent,
+    "GPT-4 Altruistic": altruistic_gpt_4_agent,
+    "GPT-4 Selfish": selfish_gpt_4_agent,
+    "GPT-4 Default": default_gpt_4_agent,
+    "GPT-3.5 Turbo Altruistic": altruistic_gpt_35_turbo_agent,
+    "GPT-3.5 Turbo Selfish": selfish_gpt_35_turbo_agent,
+    "GPT-3.5 Turbo Default": default_gpt_35_turbo_agent,
     "Claude 3 Opus Altruistic": altruistic_claude3_opus_agent,
     "Claude 3 Opus Selfish": selfish_claude3_opus_agent,
     "Claude 3 Opus Default": default_claude3_opus_agent,
@@ -152,6 +166,7 @@ agent_dict = {
     "Random Strategy": random_strategy_agent,
     "Betrayal": betrayal_agent,
 }
+
 
 # Grouping environment variables by category
 general = {"ITERATIONS": "Iterations per Matchup"}
@@ -268,7 +283,7 @@ def restore_placeholder(event, combobox, placeholder):
 
 
 def add_matchup():
-    frame = ttk.Frame(matchups_frame)
+    frame = ttk.Frame(scrollable_matchups_frame)
     frame.grid(padx=5, pady=5, sticky="ew")
 
     # Agent selection dropdowns
@@ -306,8 +321,9 @@ def add_matchup():
     )
 
     # Remove button for matchups
-    remove_btn = ttk.Button(frame, text="Remove", command=lambda: remove_matchup(frame))
-    remove_btn.grid(row=0, column=2, padx=5, pady=5)
+    remove_lbl = ttk.Label(frame, text="\u274c", font=("Helvetica", 16))
+    remove_lbl.grid(row=0, column=2, padx=5, pady=5)
+    remove_lbl.bind("<Button-1>", lambda event: remove_matchup(frame))
 
     matchups_frames.append((frame, config_a, config_b))
 
@@ -361,18 +377,22 @@ def run_simulation():
         messagebox.showerror("Error", "Please configure at least one valid matchup.")
         return
 
-    results = []
-    for config_a, config_b in matchups:
-        simulation_results = simulate_prisoners_dilemma(
-            config_a, config_b, iterations, choice_prompt
-        )
-        results.append(simulation_results)
+    def simulation_thread():
+        results = []
+        for config_a, config_b in matchups:
+            print(f"Running simulation: {config_a.name} vs {config_b.name}")
+            simulation_results = simulate_prisoners_dilemma(
+                config_a, config_b, iterations, choice_prompt
+            )
+            results.append(simulation_results)
 
-    # Show results in a message box or another form of display
-    messagebox.showinfo(
-        "Simulation Completed",
-        "Simulation Completed Successfully. Find the results in the data folder.",
-    )
+        messagebox.showinfo(
+            "Simulation Completed",
+            "Simulation Completed Successfully. Find the results in the data folder.",
+        )
+
+    thread = threading.Thread(target=simulation_thread)
+    thread.start()
 
 
 def update_env(var, value):
@@ -415,6 +435,28 @@ def add_settings_group(
     return current_row
 
 
+def add_scrollable_frame(container):
+    canvas = tk.Canvas(container)
+    scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+    scrollable_frame = ttk.Frame(canvas)
+
+    def on_mouse_wheel(event):
+        canvas.yview_scroll(-1 * (event.delta // 120), "units")
+
+    scrollable_frame.bind(
+        "<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+    )
+    scrollable_frame.bind_all("<MouseWheel>", on_mouse_wheel)
+
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    scrollbar.pack(side="right", fill="y")
+    canvas.pack(side="left", fill="both", expand=True)
+
+    return scrollable_frame
+
+
 # Function to list files in a directory
 def list_files(directory, extension):
     return [f for f in os.listdir(directory) if f.endswith(extension)]
@@ -444,7 +486,6 @@ def update_file_list(treeview, directory, extension):
 # Creating the GUI
 # ----------------------------------------------------------------------
 
-
 # Creating the main window
 root = tk.Tk()
 root.title("Prisoner's Dilemma Simulator")
@@ -463,38 +504,55 @@ bold_font = tkfont.Font(family="Helvetica", size=18, weight="bold")
 style = ttk.Style()
 style.configure("Bold.TLabelframe.Label", font=bold_font)
 
-# Frame for settings
-settings_frame = ttk.LabelFrame(root, text="Settings", style="Bold.TLabelframe")
-settings_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+# Set consistent background color for all frames
+style.configure("TFrame")
+style.configure("TLabelFrame")
+style.configure("TLabel")
+style.map("TLabelFrame", background=[("active", "!disabled")])
+style.map(
+    "Treeview",
+    background=[["selected", "SystemHighlight"]],
+    foreground=[("selected", "SystemWindowText")],
+)
 
+# Frame for settings
+settings_outer_frame = ttk.Frame(root)
+settings_outer_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+settings_frame = ttk.LabelFrame(
+    settings_outer_frame, text="Settings", style="Bold.TLabelframe"
+)
+settings_frame.pack(fill="both", expand=True)
+
+scrollable_settings_frame = add_scrollable_frame(settings_frame)
 
 # Initialize choice prompt variable
 choice_prompt_var = tk.StringVar()
 
 # Adding settings groups
-current_row = 0
-current_row = add_settings_group(settings_frame, "General", general, current_row)
-current_row += 1  # Empty row for spacing
+current_row = add_settings_group(scrollable_settings_frame, "General", general, 0)
+current_row += 1  
 current_row = add_settings_group(
-    settings_frame, "LLM Config", config, current_row, choice_prompt_var
+    scrollable_settings_frame, "LLM Config", config, current_row, choice_prompt_var
 )
-current_row += 1  # Empty row for spacing
+current_row += 1  
 current_row = add_settings_group(
-    settings_frame, "Payoff Matrix", payoff_matrix_settings, current_row
+    scrollable_settings_frame, "Payoff Matrix", payoff_matrix_settings, current_row
 )
-current_row += 1  # Empty row for spacing
-current_row = add_settings_group(settings_frame, "API Keys", api_keys, current_row)
+current_row += 1  
+current_row = add_settings_group(
+    scrollable_settings_frame, "API Keys", api_keys, current_row
+)
 
 # Frame for custom choice prompt
 custom_prompt_frame = ttk.LabelFrame(
     root, text="Enter custom choice prompt", style="Bold.TLabelframe"
 )
 
-custom_prompt_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+custom_prompt_frame.grid(row=1, column=0, padx=10, pady=10, sticky="sew")
 
 custom_prompt_text = tk.Text(custom_prompt_frame, wrap="word")
 custom_prompt_text.grid(row=0, column=0, padx=5, pady=5, sticky="sew")
-
 
 # Load the default custom choice prompt
 default_custom_prompt = choice_prompt_custom
@@ -527,13 +585,20 @@ ttk.Button(
 sys.stdout = ConsoleOutput(console_output)
 
 # Frame for matchups
-matchups_frame = ttk.LabelFrame(root, text="Matchups", style="Bold.TLabelframe")
-matchups_frame.grid(
+matchups_outer_frame = ttk.Frame(root)
+matchups_outer_frame.grid(
     row=0, column=1, columnspan=1, rowspan=1, padx=10, pady=10, sticky="nsew"
 )
 
+matchups_frame = ttk.LabelFrame(
+    matchups_outer_frame, text="Matchups", style="Bold.TLabelframe"
+)
+matchups_frame.pack(fill="both", expand=True)
+
+scrollable_matchups_frame = add_scrollable_frame(matchups_frame)
+
 # Frame for buttons
-button_frame = ttk.Frame(matchups_frame)
+button_frame = ttk.Frame(scrollable_matchups_frame)
 button_frame.grid(row=99, column=0, columnspan=3, pady=10)
 
 # Button to add matchups
