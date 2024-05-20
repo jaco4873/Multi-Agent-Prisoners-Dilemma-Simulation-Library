@@ -16,7 +16,7 @@ def write_simulation_results(results, directory="data/all_matchups_results"):
 
     current_time = datetime.datetime.now()
     formatted_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
-    filename = f"results-{formatted_time}.csv"
+    filename = f"results-{formatted_time}.csv" 
     filepath = os.path.join(directory, filename)
 
     total_score_a = 0

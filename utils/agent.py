@@ -25,20 +25,25 @@ load_dotenv
 
 class Agent:
     """
-    Represents an agent in the Prisoner's Dilemma game.
+    Represents an agent in a Prisoner's Dilemma game.
 
     Attributes:
-        config (AgentConfig): The configuration object for the agent.
+        config (AgentConfig): Configuration settings for the agent.
+        role (str): The role of the agent ('Agent A' or 'Agent B').
+        llm_messages (list): List of messages exchanged with the language learning model.
+        choice_prompt (str): The prompt for the agent's decision.
+        score (int): The current score of the agent.
 
     Methods:
-        __init__(self, config: AgentConfig): Initializes the Agent object.
-        decide_action(self): Makes a decision on the next action to take.
-        get_decision_fixed_agent(self): Gets the decision for a fixed agent.
-        get_decision_human_agent(self): Gets the decision for a human agent.
-        get_decision_llm_agent(self): Gets the decision for an LLM agent.
-        query_llm(self): Queries the LLM model for a decision.
-        extract_decision(self, response): Extracts the decision from the LLM response.
-        log_decision(self, response): Logs the LLM response to a file.
+        __init__: Initializes a new instance of the Agent class.
+        decide_action: Determines the action to be taken by the agent based on its type.
+        get_decision_fixed_agent: Executes the fixed strategy of the agent to decide an action.
+        get_decision_human_agent: Collects a decision input from a human user through the console.
+        get_decision_llm_agent: Utilizes a language model to determine the agent's decision.
+        query_llm: Queries a language learning model to get a decision based on the game's history.
+        get_llm_client: Gets the appropriate language learning model client based on the configured model.
+        extract_decision: Extracts the decision from the given response string.
+        update_score: Updates the agent's score based on the outcome of the last round in a Prisoner's Dilemma game.
     """
 
     def __init__(self, config: AgentConfig, role: str, choice_prompt: str):
@@ -48,6 +53,7 @@ class Agent:
         Args:
             config (AgentConfig): Configuration settings for the agent.
             role (str): The role of the agent ('Agent A' or 'Agent B').
+            choice_prompt (str): The prompt for the agent's decision.
         """
         self.config = config
         self.role = role

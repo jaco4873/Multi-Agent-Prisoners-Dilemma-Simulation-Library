@@ -30,6 +30,17 @@ def setup_directories(base_path="./data"):
 def simulate_prisoners_dilemma(
     config_a: AgentConfig, config_b: AgentConfig, iterations: int, choice_prompt: str
 ):
+    """Simulates the Prisoner's Dilemma game between two agents.
+
+    Args:
+        config_a (AgentConfig): The configuration for Agent A.
+        config_b (AgentConfig): The configuration for Agent B.
+        iterations (int): The number of iterations to simulate.
+        choice_prompt (str): The prompt for the agents to make their choices.
+
+    Returns:
+        Tuple[str, int, str, int]: A tuple containing the names and scores of Agent A and Agent B.
+    """
     # Initialize the agents
     agent_a = Agent(config_a, role="Agent A", choice_prompt=choice_prompt)
     agent_b = Agent(config_b, role="Agent B", choice_prompt=choice_prompt)

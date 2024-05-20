@@ -4,6 +4,16 @@ import os
 
 
 def plot_scores(file_path, graphs_dir):
+    """
+    Plots the scores of different strategies over rounds and saves the plot as a PNG file.
+
+    Args:
+        file_path (str): The path to the CSV file containing the strategy scores.
+        graphs_dir (str): The directory where the plot should be saved.
+
+    Returns:
+        None
+    """
     os.makedirs(graphs_dir, exist_ok=True)
 
     data = pd.read_csv(file_path)

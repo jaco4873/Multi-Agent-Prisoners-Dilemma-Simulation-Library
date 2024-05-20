@@ -4,6 +4,21 @@ from utils.sanitize_file_name import sanitize_filename
 
 
 def save_message_history(agent, opponent_name, directory):
+    """
+    Save the message history of an agent playing against an opponent.
+
+    Args:
+        agent: The agent whose message history is to be saved.
+        opponent_name: The name of the opponent.
+        directory: The directory where the message history file will be saved.
+
+    Returns:
+        None
+
+    Raises:
+        Exception: If there is an error during the file operation.
+
+    """
     current_time = datetime.datetime.now()
     formatted_time = current_time.strftime("%Y-%m-%d-%H:%M")
     filename = (
