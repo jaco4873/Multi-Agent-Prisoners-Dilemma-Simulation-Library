@@ -1,7 +1,7 @@
 import os
 import datetime
+import uuid
 from utils.sanitize_file_name import sanitize_filename
-
 
 def save_message_history(agent, opponent_name, directory):
     """
@@ -17,12 +17,12 @@ def save_message_history(agent, opponent_name, directory):
 
     Raises:
         Exception: If there is an error during the file operation.
-
     """
     current_time = datetime.datetime.now()
     formatted_time = current_time.strftime("%Y-%m-%d-%H:%M")
+    short_uuid = uuid.uuid4().hex[:8]  # Use the first 8 characters of the UUID
     filename = (
-        sanitize_filename(f"{agent.config.name}_message_history_{formatted_time}")
+        sanitize_filename(f"{agent.config.name}_message_history_{formatted_time}_{short_uuid}")
         + ".txt"
     )
     file_path = os.path.join(directory, filename)
