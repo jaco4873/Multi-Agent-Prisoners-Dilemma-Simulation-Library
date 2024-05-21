@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
-import uuid
+import datetime
 from utils.sanitize_file_name import sanitize_filename
 
 def plot_scores(file_path, graphs_dir):
@@ -48,6 +48,8 @@ def plot_scores(file_path, graphs_dir):
     max_round = data["Round"].max()
     plt.xticks(range(1, max_round + 1))
 
-    plot_filename = f"{title.replace(' ', '_').replace('.', '')}.png"
+    current_time = datetime.datetime.now()
+    formatted_time = current_time.strftime("%Y-%m-%d-%H:%M:%S")
+    plot_filename = f"{title.replace(' ', '_').replace('.', '')}_{formatted_time}.png"
     plt.savefig(os.path.join(graphs_dir, plot_filename))
     plt.close()
