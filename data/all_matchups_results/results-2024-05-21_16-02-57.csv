@@ -1,0 +1,15 @@
+Agent A,Score A,Agent B,Score B
+Default GPT-3.5-Turbo,30,Tit For Tat,30
+Default GPT-3.5-Turbo,23,Suspicious Tit For Tat,28
+Default GPT-3.5-Turbo,30,Forgiving Tit For Tat,30
+Default GPT-3.5-Turbo,30,Defection Sensitive Tit For Tat,30
+Default GPT-3.5-Turbo,32,Tit For Two Tats,27
+Default GPT-3.5-Turbo,30,Grim Trigger,30
+Default GPT-3.5-Turbo,30,Always Cooperate,30
+Default GPT-3.5-Turbo,30,Adaptive Strategy,30
+Default GPT-3.5-Turbo,30,Soft Majority,30
+Default GPT-3.5-Turbo,27,Hard Majority,32
+Default GPT-3.5-Turbo,18,Random Strategy,38
+Default GPT-3.5-Turbo,15,Betrayal,20
+TOTAL OUTRIGHT,325,,355
+TOTAL ADJUSTED,-30,,30

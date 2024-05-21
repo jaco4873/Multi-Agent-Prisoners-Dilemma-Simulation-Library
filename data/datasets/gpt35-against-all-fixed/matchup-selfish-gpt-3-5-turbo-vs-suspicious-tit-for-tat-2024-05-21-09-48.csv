@@ -1,0 +1,21 @@
+Agent Name,Round,Choice,Score
+Selfish GPT-3.5-Turbo,1,COOPERATE,0
+Suspicious Tit For Tat,1,DEFECT,5
+Selfish GPT-3.5-Turbo,2,COOPERATE,3
+Suspicious Tit For Tat,2,COOPERATE,8
+Selfish GPT-3.5-Turbo,3,COOPERATE,6
+Suspicious Tit For Tat,3,COOPERATE,11
+Selfish GPT-3.5-Turbo,4,COOPERATE,9
+Suspicious Tit For Tat,4,COOPERATE,14
+Selfish GPT-3.5-Turbo,5,COOPERATE,12
+Suspicious Tit For Tat,5,COOPERATE,17
+Selfish GPT-3.5-Turbo,6,COOPERATE,15
+Suspicious Tit For Tat,6,COOPERATE,20
+Selfish GPT-3.5-Turbo,7,COOPERATE,18
+Suspicious Tit For Tat,7,COOPERATE,23
+Selfish GPT-3.5-Turbo,8,COOPERATE,21
+Suspicious Tit For Tat,8,COOPERATE,26
+Selfish GPT-3.5-Turbo,9,COOPERATE,24
+Suspicious Tit For Tat,9,COOPERATE,29
+Selfish GPT-3.5-Turbo,10,COOPERATE,27
+Suspicious Tit For Tat,10,COOPERATE,32

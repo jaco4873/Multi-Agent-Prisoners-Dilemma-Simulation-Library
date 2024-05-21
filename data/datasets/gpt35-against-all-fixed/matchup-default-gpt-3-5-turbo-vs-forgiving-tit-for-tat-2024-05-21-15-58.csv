@@ -1,0 +1,21 @@
+Agent Name,Round,Choice,Score
+Default GPT-3.5-Turbo,1,COOPERATE,3
+Forgiving Tit For Tat,1,COOPERATE,3
+Default GPT-3.5-Turbo,2,COOPERATE,6
+Forgiving Tit For Tat,2,COOPERATE,6
+Default GPT-3.5-Turbo,3,COOPERATE,9
+Forgiving Tit For Tat,3,COOPERATE,9
+Default GPT-3.5-Turbo,4,COOPERATE,12
+Forgiving Tit For Tat,4,COOPERATE,12
+Default GPT-3.5-Turbo,5,COOPERATE,15
+Forgiving Tit For Tat,5,COOPERATE,15
+Default GPT-3.5-Turbo,6,COOPERATE,18
+Forgiving Tit For Tat,6,COOPERATE,18
+Default GPT-3.5-Turbo,7,COOPERATE,21
+Forgiving Tit For Tat,7,COOPERATE,21
+Default GPT-3.5-Turbo,8,COOPERATE,24
+Forgiving Tit For Tat,8,COOPERATE,24
+Default GPT-3.5-Turbo,9,COOPERATE,27
+Forgiving Tit For Tat,9,COOPERATE,27
+Default GPT-3.5-Turbo,10,COOPERATE,30
+Forgiving Tit For Tat,10,COOPERATE,30

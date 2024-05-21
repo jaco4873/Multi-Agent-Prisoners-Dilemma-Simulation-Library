@@ -1,0 +1,21 @@
+Agent Name,Round,Choice,Score
+Default GPT-3.5-Turbo,1,DEFECT,5
+Tit For Two Tats,1,COOPERATE,0
+Default GPT-3.5-Turbo,2,COOPERATE,8
+Tit For Two Tats,2,COOPERATE,3
+Default GPT-3.5-Turbo,3,COOPERATE,11
+Tit For Two Tats,3,COOPERATE,6
+Default GPT-3.5-Turbo,4,COOPERATE,14
+Tit For Two Tats,4,COOPERATE,9
+Default GPT-3.5-Turbo,5,COOPERATE,17
+Tit For Two Tats,5,COOPERATE,12
+Default GPT-3.5-Turbo,6,COOPERATE,20
+Tit For Two Tats,6,COOPERATE,15
+Default GPT-3.5-Turbo,7,COOPERATE,23
+Tit For Two Tats,7,COOPERATE,18
+Default GPT-3.5-Turbo,8,COOPERATE,26
+Tit For Two Tats,8,COOPERATE,21
+Default GPT-3.5-Turbo,9,COOPERATE,29
+Tit For Two Tats,9,COOPERATE,24
+Default GPT-3.5-Turbo,10,COOPERATE,32
+Tit For Two Tats,10,COOPERATE,27

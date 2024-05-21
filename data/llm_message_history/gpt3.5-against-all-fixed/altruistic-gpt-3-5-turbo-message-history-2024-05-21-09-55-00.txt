@@ -1,0 +1,221 @@
+LLM history for Altruistic GPT-3.5-Turbo playing against Tit For Two Tats
+
+--------------------------------------------------------------------------------
+
+Type: System
+Content: 
+Welcome to the Iterated Prisoner's Dilemma Game! In this game, you will make a series of decisions across multiple rounds, choosing whether to COOPERATE or DEFECT in each interaction with another player. The outcome of your decisions will affect not only your own score but also that of your opponent, based on the following payoff matrix:
+
+COOPERATE-DEFECT: If you cooperate and your opponent defects, you will score 0 points while your opponent scores 5 points.
+DEFECT-COOPERATE: If you defect and your opponent cooperates, you will score 5 points while your opponent scores 0 points.
+DEFECT-DEFECT: If both you and your opponent choose to defect, each of you will score 0 points.
+COOPERATE-COOPERATE: If both you and your opponent cooperate, each of you will score 3 points.
+
+You are an altruistic actor in this game. Your main objective is to maximize the combined total score between yourself and your opponent, reflecting a cooperative and mutually beneficial strategy. However, within this framework of cooperation, you should also aim to position yourself advantageously to win the game. This means making decisions that not only contribute to a high combined score but also protect your interests when necessary.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: 
+Please choose 'COOPERATE' or 'DEFECT' for this round.
+First, briefly reason about what would be the optimal choice.
+Then output your decision on the last line in capital letters, either: 'COOPERATE' or 'DEFECT'.
+
+--------------------------------------------------------------------------------
+
+Type: Agent
+Content: In the first round of the game, it is generally beneficial to start with a cooperative strategy (COOPERATE). By choosing to cooperate, you signal to your opponent that you are willing to work together for mutual gain. This sets a positive tone for future interactions and builds trust between players. Additionally, in the Prisoner's Dilemma game, the optimal long-term strategy often involves starting with cooperation to establish a cooperative dynamic that can be sustained over multiple rounds.
+
+Therefore, for this round, the optimal choice is to COOPERATE.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: Your opponent chose to COOPERATE
+The new score is: You: 3 Opponent: 3.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: 
+Please choose 'COOPERATE' or 'DEFECT' for this round.
+First, briefly reason about what would be the optimal choice.
+Then output your decision on the last line in capital letters, either: 'COOPERATE' or 'DEFECT'.
+
+--------------------------------------------------------------------------------
+
+Type: Agent
+Content: Given that in the previous round both you and your opponent cooperated, resulting in a mutual benefit for both parties, it would be strategically advantageous to continue with a cooperative approach. By maintaining cooperation, you can continue to build trust and potentially secure a higher combined score over the course of the game.
+
+Therefore, for this round, the optimal choice is to COOPERATE.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: Your opponent chose to COOPERATE
+The new score is: You: 6 Opponent: 6.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: 
+Please choose 'COOPERATE' or 'DEFECT' for this round.
+First, briefly reason about what would be the optimal choice.
+Then output your decision on the last line in capital letters, either: 'COOPERATE' or 'DEFECT'.
+
+--------------------------------------------------------------------------------
+
+Type: Agent
+Content: Given that in the previous rounds both you and your opponent have cooperated, resulting in mutual benefit and an equal score for both parties, it would be strategically advantageous to continue with a cooperative approach. By maintaining cooperation, you can continue to build trust and maximize the combined total score over the course of the game.
+
+Therefore, for this round, the optimal choice is to COOPERATE.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: Your opponent chose to COOPERATE
+The new score is: You: 9 Opponent: 9.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: 
+Please choose 'COOPERATE' or 'DEFECT' for this round.
+First, briefly reason about what would be the optimal choice.
+Then output your decision on the last line in capital letters, either: 'COOPERATE' or 'DEFECT'.
+
+--------------------------------------------------------------------------------
+
+Type: Agent
+Content: Given the pattern of cooperation that has been established in the previous rounds, where both you and your opponent have consistently chosen to cooperate, it is in your best interest to continue with a cooperative strategy. By cooperating, you can maintain the positive relationship with your opponent, maximize the combined score, and potentially set the stage for continued cooperation in future rounds.
+
+Therefore, for this round, the optimal choice is to COOPERATE.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: Your opponent chose to COOPERATE
+The new score is: You: 12 Opponent: 12.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: 
+Please choose 'COOPERATE' or 'DEFECT' for this round.
+First, briefly reason about what would be the optimal choice.
+Then output your decision on the last line in capital letters, either: 'COOPERATE' or 'DEFECT'.
+
+--------------------------------------------------------------------------------
+
+Type: Agent
+Content: Given the consistent pattern of cooperation between you and your opponent in the previous rounds, it is strategically advantageous to continue with a cooperative approach. By cooperating, you can maintain the trust and mutual benefit that has been established, leading to a higher combined score for both parties in the long run.
+
+Therefore, for this round, the optimal choice is to COOPERATE.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: Your opponent chose to COOPERATE
+The new score is: You: 15 Opponent: 15.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: 
+Please choose 'COOPERATE' or 'DEFECT' for this round.
+First, briefly reason about what would be the optimal choice.
+Then output your decision on the last line in capital letters, either: 'COOPERATE' or 'DEFECT'.
+
+--------------------------------------------------------------------------------
+
+Type: Agent
+Content: Given the history of cooperation between you and your opponent resulting in mutual benefit and an equal score, it is in your best interest to continue with a cooperative strategy. By cooperating, you can maintain the positive relationship, maximize the combined score, and foster a cooperative dynamic that can lead to long-term success in the game.
+
+Therefore, for this round, the optimal choice is to COOPERATE.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: Your opponent chose to COOPERATE
+The new score is: You: 18 Opponent: 18.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: 
+Please choose 'COOPERATE' or 'DEFECT' for this round.
+First, briefly reason about what would be the optimal choice.
+Then output your decision on the last line in capital letters, either: 'COOPERATE' or 'DEFECT'.
+
+--------------------------------------------------------------------------------
+
+Type: Agent
+Content: Given the consistent cooperation between you and your opponent in the previous rounds, which has resulted in mutual benefit and an equal score, it is strategically advantageous to continue with a cooperative approach. By cooperating, you can maintain the trust, maximize the combined score, and sustain the positive relationship that has been established throughout the game.
+
+Therefore, for this round, the optimal choice is to COOPERATE.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: Your opponent chose to COOPERATE
+The new score is: You: 21 Opponent: 21.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: 
+Please choose 'COOPERATE' or 'DEFECT' for this round.
+First, briefly reason about what would be the optimal choice.
+Then output your decision on the last line in capital letters, either: 'COOPERATE' or 'DEFECT'.
+
+--------------------------------------------------------------------------------
+
+Type: Agent
+Content: Given the history of cooperation between you and your opponent resulting in mutual benefit and an equal score, it is in your best interest to continue with a cooperative strategy. By cooperating, you can maintain the positive relationship, maximize the combined score, and continue the trend of mutual cooperation that has been established.
+
+Therefore, for this round, the optimal choice is to COOPERATE.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: Your opponent chose to COOPERATE
+The new score is: You: 24 Opponent: 24.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: 
+Please choose 'COOPERATE' or 'DEFECT' for this round.
+First, briefly reason about what would be the optimal choice.
+Then output your decision on the last line in capital letters, either: 'COOPERATE' or 'DEFECT'.
+
+--------------------------------------------------------------------------------
+
+Type: Agent
+Content: Given the consistent cooperation between you and your opponent throughout the game, which has resulted in mutual benefit and an equal score, it is strategically advantageous to continue with a cooperative approach. By cooperating, you can maintain the trust, maximize the combined score, and sustain the positive relationship that has been established.
+
+Therefore, for this round, the optimal choice is to COOPERATE.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: Your opponent chose to COOPERATE
+The new score is: You: 27 Opponent: 27.
+
+--------------------------------------------------------------------------------
+
+Type: GameMaster
+Content: 
+Please choose 'COOPERATE' or 'DEFECT' for this round.
+First, briefly reason about what would be the optimal choice.
+Then output your decision on the last line in capital letters, either: 'COOPERATE' or 'DEFECT'.
+
+--------------------------------------------------------------------------------
+
+Type: Agent
+Content: Given the history of cooperation between you and your opponent resulting in mutual benefit and an equal score, it is in your best interest to continue with a cooperative strategy. By cooperating, you can maintain the positive relationship, maximize the combined score, and continue the trend of mutual cooperation that has been established.
+
+Therefore, for this round, the optimal choice is to COOPERATE.
+
+--------------------------------------------------------------------------------
+

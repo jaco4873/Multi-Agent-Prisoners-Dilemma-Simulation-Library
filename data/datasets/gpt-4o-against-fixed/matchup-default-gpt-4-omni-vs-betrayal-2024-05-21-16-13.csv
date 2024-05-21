@@ -1,0 +1,21 @@
+Agent Name,Round,Choice,Score
+Default GPT-4-omni,1,COOPERATE,3
+Betrayal,1,COOPERATE,3
+Default GPT-4-omni,2,COOPERATE,6
+Betrayal,2,COOPERATE,6
+Default GPT-4-omni,3,COOPERATE,9
+Betrayal,3,COOPERATE,9
+Default GPT-4-omni,4,COOPERATE,12
+Betrayal,4,COOPERATE,12
+Default GPT-4-omni,5,COOPERATE,15
+Betrayal,5,COOPERATE,15
+Default GPT-4-omni,6,COOPERATE,15
+Betrayal,6,DEFECT,20
+Default GPT-4-omni,7,DEFECT,15
+Betrayal,7,DEFECT,20
+Default GPT-4-omni,8,COOPERATE,15
+Betrayal,8,DEFECT,25
+Default GPT-4-omni,9,DEFECT,15
+Betrayal,9,DEFECT,25
+Default GPT-4-omni,10,DEFECT,15
+Betrayal,10,DEFECT,25
