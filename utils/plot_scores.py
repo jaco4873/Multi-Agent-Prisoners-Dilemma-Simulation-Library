@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+import uuid
+from utils.sanitize_file_name import sanitize_filename
 
 def plot_scores(file_path, graphs_dir):
     """
@@ -23,8 +25,8 @@ def plot_scores(file_path, graphs_dir):
         # There are exactly two unique names, no need to add identifier
         data["Unique Agent Name"] = data["Agent Name"]
     else:
-        # There are not exactly two unique names, add an identifier
-        
+        # Names are not unique, add an identifier
+        data['Agent Identifier'] = data.groupby('Round').cumcount() + 1
         data['Unique Agent Name'] = data['Agent Name'] + ' ' + data['Agent Identifier'].astype(str)
 
     plt.figure(figsize=(10, 6))
