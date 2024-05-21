@@ -530,6 +530,9 @@ payoff_matrix_settings = {
 
 
 # Adding settings groups
+choice_prompt_var = tk.StringVar()
+
+
 current_row = add_settings_group(scrollable_settings_frame, "General", general, 0)
 current_row += 1  
 current_row = add_settings_group(
@@ -545,8 +548,6 @@ current_row = add_settings_group(
 )
 
 # Frame for custom choice prompt
-choice_prompt_var = tk.StringVar()
-
 custom_prompt_frame = ttk.LabelFrame(
     root, text="Enter custom choice prompt", style="Bold.TLabelframe"
 )

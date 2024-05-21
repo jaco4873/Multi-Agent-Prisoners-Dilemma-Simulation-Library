@@ -2,7 +2,7 @@ import csv
 import os
 import datetime
 from utils.sanitize_file_name import sanitize_filename
-from utils.plot_strategy_score import plot_scores
+from utils.plot_scores import plot_scores
 from utils.save_message_history import save_message_history
 from utils.agent import Agent
 from models.agent_config import AgentConfig
