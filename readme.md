@@ -1,5 +1,7 @@
 # Multi-Agent Prisoner's Dilemma Simulation Library
 
+![banner](assets/hero-banner.png)
+
 ## Introduction
 
 This repository contains a generalized code library designed to streamline the data collection process for Iterated Prisoner's Dilemma (IPD) simulations with various types of agents, including large language models (LLMs), fixed strategies, and human participants. The library facilitates easy setup and execution of experiments, making the study of LLM behavior more accessible to researchers with limited programming knowledge.
