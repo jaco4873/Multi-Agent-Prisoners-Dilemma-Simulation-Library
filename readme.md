@@ -30,6 +30,9 @@ This repository contains a generalized code library designed to streamline the d
 3. Setup the empty variables in the environment file
 
 ## Usage
+In addition to the below instructions, a more detailed video walkthrough of the simulation library can be found here:
+https://osf.io/j4kg9/
+
 
 ### Script-based Execution
 
