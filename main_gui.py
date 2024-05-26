@@ -6,6 +6,7 @@ from tkinter import ttk, messagebox
 import tkinter.font as tkfont
 from dotenv import load_dotenv, set_key
 from utils.simulation import simulate_prisoners_dilemma
+from utils.write_simulation_overview import write_simulation_overview
 
 # Import agents
 from agent_configs.human_agent_config import human_agent
@@ -360,6 +361,8 @@ def run_simulation():
                 config_a, config_b, iterations, choice_prompt
             )
             results.append(simulation_results)
+            
+        write_simulation_overview(results)
 
         messagebox.showinfo(
             "Simulation Completed",

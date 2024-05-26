@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 
 from utils.simulation import simulate_prisoners_dilemma
-from utils.write_all_matchups_results import write_simulation_results
+from utils.write_simulation_overview import write_simulation_overview
 
 # ----------------------------------------------------------------------
 # Agent Imports
@@ -103,8 +103,7 @@ iterations = int(os.getenv("ITERATIONS"))
 
 # Define matchups in a list of tuples
 matchups = [
-    (altruistic_gpt_35_turbo_agent, always_cooperate_agent),
-    (altruistic_gpt_35_turbo_agent, random_strategy_agent),
+    (random_strategy_agent, always_cooperate_agent)
 ]
 
 # Running the simulations
@@ -118,4 +117,4 @@ for config_a, config_b in matchups:
     )
     results.append(simulation_results)
 
-write_simulation_results(results)
+write_simulation_overview(results)

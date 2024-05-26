@@ -3,7 +3,7 @@ import os
 import datetime
 
 
-def write_simulation_results(results, directory="data/all_matchups_results"):
+def write_simulation_overview(results, directory="data/all_matchups_results"):
     """
     Writes the simulation results to a CSV file.
 
