@@ -1,0 +1,6 @@
+Agent A,Score A,Agent B,Score B
+Default GPT-4-omni,60,Default GPT-4-omni,60
+Selfish GPT-4-omni,0,Selfish GPT-4-omni,0
+Altruistic GPT-4-Omni,60,Altruistic GPT-4-Omni,60
+TOTAL OUTRIGHT,120,,120
+TOTAL ADJUSTED,0,,0

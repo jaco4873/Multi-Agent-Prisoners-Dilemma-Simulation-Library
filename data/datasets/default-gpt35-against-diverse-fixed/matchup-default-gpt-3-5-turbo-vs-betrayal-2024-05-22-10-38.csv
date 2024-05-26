@@ -1,0 +1,21 @@
+Agent Name,Round,Choice,Score
+Default GPT-3.5-Turbo,1,COOPERATE,3
+Betrayal,1,COOPERATE,3
+Default GPT-3.5-Turbo,2,COOPERATE,6
+Betrayal,2,COOPERATE,6
+Default GPT-3.5-Turbo,3,COOPERATE,9
+Betrayal,3,COOPERATE,9
+Default GPT-3.5-Turbo,4,COOPERATE,12
+Betrayal,4,COOPERATE,12
+Default GPT-3.5-Turbo,5,COOPERATE,15
+Betrayal,5,COOPERATE,15
+Default GPT-3.5-Turbo,6,COOPERATE,15
+Betrayal,6,DEFECT,20
+Default GPT-3.5-Turbo,7,COOPERATE,15
+Betrayal,7,DEFECT,25
+Default GPT-3.5-Turbo,8,COOPERATE,15
+Betrayal,8,DEFECT,30
+Default GPT-3.5-Turbo,9,COOPERATE,15
+Betrayal,9,DEFECT,35
+Default GPT-3.5-Turbo,10,COOPERATE,15
+Betrayal,10,DEFECT,40

@@ -1,0 +1,10 @@
+Agent A,Score A,Agent B,Score B
+Default GPT-4-omni,30,Tit For Tat,30
+Default GPT-4-omni,30,Grim Trigger,30
+Default GPT-4-omni,30,Always Cooperate,30
+Default GPT-4-omni,15,Betrayal,20
+Default GPT-4-omni,15,Hard Majority,15
+Default GPT-4-omni,30,Soft Majority,30
+Default GPT-4-omni,30,Adaptive Strategy,30
+TOTAL OUTRIGHT,180,,185
+TOTAL ADJUSTED,-5,,5
